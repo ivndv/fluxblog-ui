@@ -64,7 +64,10 @@ export async function getPosts(locale: string = 'es'): Promise<PayloadPost[]> {
 	}
 }
 
-export async function getPostBySlug(slug: string, locale: string = 'es'): Promise<PayloadPost | null> {
+export async function getPostBySlug(
+	slug: string,
+	locale: string = 'es',
+): Promise<PayloadPost | null> {
 	const url = `${PAYLOAD_URL}/posts?where[slug][equals]=${slug}&locale=${locale}`;
 	try {
 		const res = await fetch(url);

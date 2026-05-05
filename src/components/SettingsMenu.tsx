@@ -38,10 +38,10 @@ export default function SettingsMenu() {
 		if (newLang === lang) return;
 		setLang(newLang);
 		localStorage.setItem('lang', newLang);
-		
+
 		const path = window.location.pathname;
 		if (newLang === 'en') {
-			window.location.href = '/en' + path;
+			window.location.href = `/en${path}`;
 		} else {
 			window.location.href = path.replace(/^\/en/, '') || '/';
 		}
