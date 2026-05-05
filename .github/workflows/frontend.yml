@@ -47,4 +47,5 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: f20988c7a9bbc4f929f7893fa6954de6
           command: pages deploy dist/ --project-name=fluxdev-blog-frontend
