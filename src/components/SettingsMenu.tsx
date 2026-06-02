@@ -1,21 +1,29 @@
 import { useEffect, useRef, useState } from 'react';
+import { useStore } from '../store/store';
+import { getDictionary, type Locale } from '../i18n/dictionary';
 
 export default function SettingsMenu() {
 	const [isOpen, setIsOpen] = useState(false);
-	const [theme, setTheme] = useState<'dark' | 'light'>('dark');
-	const [lang, setLang] = useState<'es' | 'en'>('es');
+	const { theme, lang, setTheme, setLang } = useStore();
 	const menuRef = useRef<HTMLDivElement>(null);
 
-	// Read saved preferences on mount
-	useEffect(() => {
-		const savedTheme = (localStorage.getItem('theme') as 'dark' | 'light') || 'dark';
-		setTheme(savedTheme);
+	// Detectar idioma actual desde la URL para el diccionario
+	const currentLocale: Locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/en') ? 'en' : 'es';
+	const t = getDictionary(currentLocale);
 
+	// Sync theme class with document on mount and when theme changes
+	useEffect(() => {
+		document.documentElement.classList.toggle('light', theme === 'light');
+	}, [theme]);
+
+	// Sync language with URL on mount (Zustand persist will handle localStorage)
+	useEffect(() => {
 		const path = window.location.pathname;
-		const currentLang = path.startsWith('/en') ? 'en' : 'es';
-		setLang(currentLang);
-		localStorage.setItem('lang', currentLang);
-	}, []);
+		const urlLang = path.startsWith('/en') ? 'en' : 'es';
+		if (urlLang !== lang) {
+			setLang(urlLang);
+		}
+	}, [lang, setLang]);
 
 	// Close dropdown when clicking outside
 	useEffect(() => {
@@ -30,14 +38,11 @@ export default function SettingsMenu() {
 
 	function handleThemeChange(newTheme: 'dark' | 'light') {
 		setTheme(newTheme);
-		localStorage.setItem('theme', newTheme);
-		document.documentElement.classList.toggle('light', newTheme === 'light');
 	}
 
 	function handleLangChange(newLang: 'es' | 'en') {
 		if (newLang === lang) return;
 		setLang(newLang);
-		localStorage.setItem('lang', newLang);
 
 		const path = window.location.pathname;
 		if (newLang === 'en') {
@@ -84,7 +89,7 @@ export default function SettingsMenu() {
 					{/* Theme Selector */}
 					<div className="p-4 border-b border-border-subtle">
 						<span className="text-[10px] font-bold tracking-[0.2em] uppercase text-text-muted mb-3 block">
-							Tema
+							{t.settings.theme}
 						</span>
 						<div className="flex gap-2">
 							<button
@@ -111,7 +116,7 @@ export default function SettingsMenu() {
 										d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
 									/>
 								</svg>
-								Oscuro
+								{t.settings.dark}
 							</button>
 							<button
 								type="button"
@@ -137,7 +142,7 @@ export default function SettingsMenu() {
 										d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
 									/>
 								</svg>
-								Claro
+								{t.settings.light}
 							</button>
 						</div>
 					</div>
@@ -145,7 +150,7 @@ export default function SettingsMenu() {
 					{/* Language Selector */}
 					<div className="p-4">
 						<span className="text-[10px] font-bold tracking-[0.2em] uppercase text-text-muted mb-3 block">
-							Idioma
+							{t.settings.language}
 						</span>
 						<div className="flex gap-2">
 							<button
@@ -157,7 +162,7 @@ export default function SettingsMenu() {
 										: 'text-text-muted hover:text-text-secondary hover:bg-surface-raised'
 								}`}
 							>
-								🇲🇽 Español
+								{t.settings.spanish}
 							</button>
 							<button
 								type="button"
@@ -168,7 +173,7 @@ export default function SettingsMenu() {
 										: 'text-text-muted hover:text-text-secondary hover:bg-surface-raised'
 								}`}
 							>
-								🇺🇸 English
+								{t.settings.english}
 							</button>
 						</div>
 					</div>

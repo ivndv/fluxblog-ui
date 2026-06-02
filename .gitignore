@@ -3,6 +3,12 @@ dist/
 # generated types
 .astro/
 
+# codegraph
+.codegraph/
+
+# wrangler state
+.wrangler/
+
 # dependencies
 node_modules/
 

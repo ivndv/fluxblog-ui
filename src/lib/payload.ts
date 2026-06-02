@@ -1,4 +1,4 @@
-interface LexicalNode {
+export interface LexicalNode {
 	type: string;
 	tag?: string;
 	version: number;
@@ -12,7 +12,7 @@ interface LexicalNode {
 	children?: LexicalNode[];
 }
 
-interface LexicalContent {
+export interface LexicalContent {
 	root: {
 		type: string;
 		direction: string;
@@ -36,15 +36,8 @@ export interface PayloadPost {
 	updatedAt: string;
 }
 
-export interface PayloadResponse<T> {
-	docs: T[];
-	totalDocs: number;
-	limit: number;
-	totalPages: number;
-	page: number;
-}
-
-const PAYLOAD_URL = import.meta.env.PUBLIC_PAYLOAD_URL || 'http://localhost:3000/api';
+// Se ejecuta solo en el servidor durante el build (SSG), por lo que PAYLOAD_URL es seguro y no se expone al cliente.
+const PAYLOAD_URL = import.meta.env.PAYLOAD_URL || 'http://localhost:3000/api';
 
 export async function getPosts(locale: string = 'es'): Promise<PayloadPost[]> {
 	const url = `${PAYLOAD_URL}/posts?limit=100&sort=-createdAt&locale=${locale}`;
@@ -55,11 +48,10 @@ export async function getPosts(locale: string = 'es'): Promise<PayloadPost[]> {
 			console.error(`[Payload] Error fetching posts: ${res.status} ${res.statusText}`, errorText);
 			return [];
 		}
-		const data: PayloadResponse<PayloadPost> = await res.json();
+		const data = await res.json();
 		return data.docs;
 	} catch (error) {
 		console.error(`[Payload] CRITICAL CONNECTION ERROR fetching posts from ${url}:`, error);
-		// Re-lanzamos el error para que el build se detenga pero con info en el log
 		throw error;
 	}
 }
@@ -75,7 +67,7 @@ export async function getPostBySlug(
 			console.error(`[Payload] Error fetching post by slug: ${res.status}`);
 			return null;
 		}
-		const data: PayloadResponse<PayloadPost> = await res.json();
+		const data = await res.json();
 		return data.docs[0] || null;
 	} catch (error) {
 		console.error(`[Payload] CRITICAL CONNECTION ERROR fetching slug ${slug} from ${url}:`, error);

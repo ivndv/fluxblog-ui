@@ -1,0 +1,139 @@
+---
+import { getPosts } from "../lib/payload";
+import FadeIn from "./animations/FadeIn.astro";
+import IconArrowRight from "./icons/IconArrowRight.astro";
+import { getDictionary, type Locale } from "../i18n/dictionary";
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+
+const posts = await getPosts(locale);
+
+// Extraer tags únicos de todos los posts
+const popularTags = [
+	...new Set(posts.flatMap((p) => (p.tags ?? []).map((t) => t.value))),
+].sort();
+
+const blogPrefix = locale === 'en' ? '/en/blog' : '/blog';
+const dateFormatLocale = locale === 'en' ? 'en-US' : 'es-ES';
+---
+
+<header class="mb-12">
+	<FadeIn direction="up" duration={0.5}>
+		<h1
+			class="text-4xl md:text-5xl font-extrabold mb-5 tracking-tight leading-tight text-text-heading"
+			set:html={t.home.title}
+		>
+		</h1>
+	</FadeIn>
+	
+	<FadeIn direction="up" delay={200}>
+		<p
+			class="text-base text-text-secondary leading-relaxed max-w-2xl mb-8"
+		>
+			{t.home.description}
+		</p>
+	</FadeIn>
+
+	<!-- Temas populares -->
+	<FadeIn direction="up" delay={400}>
+		<div class="pt-2">
+			<p
+				class="text-xs font-bold tracking-widest uppercase text-text-muted mb-4"
+			>
+				{t.home.popularTopics}
+			</p>
+			<div class="flex flex-wrap gap-2">
+				{
+					popularTags.length > 0 ? (
+						popularTags.map((tag) => (
+							<span class="px-4 py-1.5 text-sm rounded-full border border-border-subtle text-text-muted hover:border-brand hover:text-brand transition-colors cursor-pointer">
+								#{tag}
+							</span>
+						))
+					) : (
+						<span class="text-sm text-text-faint italic">
+							{t.home.noTags}
+						</span>
+					)
+				}
+			</div>
+		</div>
+	</FadeIn>
+</header>
+
+<hr class="border-border-subtle mb-16 opacity-50" />
+
+<section>
+	{
+		posts.map((post, index) => (
+			<FadeIn 
+				direction="up" 
+				delay={600 + index * 150}
+				class="mb-12 md:mb-16 block w-full"
+			>
+				<article class="group relative">
+					<div class="p-8 md:p-10 rounded-card bg-surface-raised border border-border-subtle hover:bg-surface-hover hover:border-border-hover transition-all duration-slow">
+						<div class="flex flex-col gap-6">
+							<div class="flex items-center gap-4 text-xs font-bold tracking-widest uppercase text-text-muted">
+								{
+									(post.tags ?? []).length > 0 && (
+										<>
+											<div class="flex gap-2">
+												{post.tags.map((t) => (
+													<span class="text-brand font-black">
+														#{t.value}
+													</span>
+												))}
+											</div>
+											<span class="w-1 h-1 bg-border-muted rounded-full" />
+										</>
+									)
+								}
+								<span>
+									{new Date(
+										post.date || post.createdAt,
+									).toLocaleDateString(dateFormatLocale, {
+										day: "2-digit",
+										month: "short",
+										year: "numeric",
+									})}
+								</span>
+							</div>
+
+							<a
+								href={`${blogPrefix}/${post.slug}`}
+								class="block transition-opacity"
+							>
+								<h2 class="text-2xl md:text-3xl font-bold text-text-primary group-hover:text-brand-hover transition-colors duration-normal">
+									{post.title}
+								</h2>
+							</a>
+
+							<p class="text-text-secondary text-lg leading-relaxed">
+								{post.excerpt ||
+									post.content?.root?.children?.[0]?.children?.[0]?.text?.substring(
+										0,
+										160,
+									) + "..." ||
+									t.home.noDescription}
+							</p>
+
+							<a
+								href={`${blogPrefix}/${post.slug}`}
+								class="inline-flex items-center text-sm font-bold text-text-primary hover:text-white group/link"
+							>
+								{t.home.readMore}
+								<IconArrowRight class="w-4 h-4 ml-2 group-hover/link:translate-x-1 transition-transform" />
+							</a>
+						</div>
+					</div>
+				</article>
+			</FadeIn>
+		))
+	}
+</section>

@@ -1,0 +1,14 @@
+# Configuración de Wrangler para Cloudflare Pages
+# Wrangler es la CLI de Cloudflare para gestionar Workers y Pages
+
+# Nombre del proyecto en Cloudflare
+name = "fluxblog-ui"
+
+# Fecha de compatibilidad para las APIs de Cloudflare
+compatibility_date = "2026-06-01"
+
+# Directorio donde Astro genera el build
+pages_build_output_dir = "./dist"
+
+# Flags de compatibilidad (necesario para que funcione correctamente con Astro y Hono)
+compatibility_flags = ["nodejs_compat"]

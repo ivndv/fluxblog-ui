@@ -1,10 +1,10 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getPosts } from "../../lib/payload";
-import FadeIn from "../../components/animations/FadeIn.tsx";
+import PostContent from "../../components/PostContent.astro";
 
 export async function getStaticPaths() {
-    const posts = await getPosts();
+    const posts = await getPosts('es');
     return posts.map((post) => ({
         params: { slug: post.slug },
         props: { post },
@@ -13,15 +13,6 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 
-// Fallbacks for missing fields
-const readingTime = "5 min de lectura";
-const formatDate = (date: string) =>
-    new Date(date).toLocaleDateString("es-MX", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-    });
-const contentBlocks = post.content?.root?.children || [];
 const postDescription =
     post.excerpt ||
     post.content?.root?.children?.[0]?.children?.[0]?.text?.substring(0, 160) ||
@@ -30,104 +21,6 @@ const postDescription =
 
 <Layout title={post.title} description={postDescription}>
     <main class="max-w-3xl mx-auto px-6 py-12 md:py-20">
-        <nav class="mb-12">
-            <FadeIn client:load direction="left" duration={0.4}>
-                <a
-                    href="/"
-                    class="group inline-flex items-center text-sm font-bold tracking-widest uppercase text-text-muted hover:text-white"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="w-4 h-4 mr-3 group-hover:-translate-x-1 transition-transform"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2.5"
-                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    Regresar
-                </a>
-            </FadeIn>
-        </nav>
-
-        <header class="mb-16">
-            <FadeIn client:load direction="up" delay={0.2}>
-                <h1
-                    class="text-4xl md:text-6xl font-extrabold tracking-tighter leading-tight mb-8 text-text-heading"
-                >
-                    {post.title}
-                </h1>
-            </FadeIn>
-
-            <FadeIn client:load direction="up" delay={0.4}>
-                <div class="flex flex-wrap items-center gap-6 pt-2 border-t border-border-subtle/30 mt-8">
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="w-10 h-10 rounded-full bg-surface-hover flex items-center justify-center font-black text-xs border border-white/5"
-                        >
-                            FD
-                        </div>
-                        <div class="text-sm">
-                            <p class="font-bold text-text-primary">
-                                {post.author?.name || "Ivan G."}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-4 text-xs font-bold tracking-widest uppercase text-text-muted">
-                        <span class="w-1 h-1 bg-border-muted rounded-full"></span>
-                        <span>{formatDate(post.date || post.createdAt)}</span>
-                        <span class="w-1 h-1 bg-border-muted rounded-full"></span>
-                        <span class="italic">{readingTime}</span>
-                    </div>
-                </div>
-            </FadeIn>
-        </header>
-
-        <FadeIn client:load direction="up" delay={0.8}>
-            <article class="article-content max-w-none">
-                {
-                    contentBlocks.map((block) => {
-                        const textContent =
-                            block.children?.map((c) => c.text).join("") || "";
-
-                        if (block.type === "paragraph") {
-                            return <p>{textContent}</p>;
-                        }
-                        if (block.type === "heading" && block.tag === "h2") {
-                            return (
-                                <h2
-                                    id={textContent
-                                        .toLowerCase()
-                                        .replace(/\s+/g, "-")}
-                                >
-                                    {textContent}
-                                </h2>
-                            );
-                        }
-                        if (block.type === "heading" && block.tag === "h3") {
-                            return (
-                                <h3
-                                    id={textContent
-                                        .toLowerCase()
-                                        .replace(/\s+/g, "-")}
-                                >
-                                    {textContent}
-                                </h3>
-                            );
-                        }
-                        if (block.type === "quote") {
-                            return <blockquote>{textContent}</blockquote>;
-                        }
-                        // Handle other types or default
-                        return <p>{textContent}</p>;
-                    })
-                }
-            </article>
-        </FadeIn>
+        <PostContent post={post} locale="es" />
     </main>
 </Layout>

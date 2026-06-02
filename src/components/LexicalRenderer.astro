@@ -1,0 +1,90 @@
+---
+import type { LexicalNode } from "../lib/payload";
+
+interface Props {
+	nodes: LexicalNode[];
+}
+
+const { nodes } = Astro.props;
+---
+
+{
+	nodes.map((node) => {
+		const children = node.children;
+		const textContent = children?.map((c: LexicalNode) => c.text || '').join('') || '';
+		const format = node.format || 0;
+
+		switch (node.type) {
+			case 'paragraph': {
+				// Renderizar hijos inline
+				let content = textContent;
+				if (format & 1) content = `<strong>${content}</strong>`;
+				if (format & 2) content = `<em>${content}</em>`;
+
+				// Si tiene hijos complejos, renderizar recursivamente
+				if (children && children.length > 0 && children.some((c: LexicalNode) => c.type !== 'text' && c.type !== undefined)) {
+					return <p><LexicalRenderer nodes={children} /></p>;
+				}
+
+				return <p set:html={content} />;
+			}
+
+			case 'heading': {
+				let content = textContent;
+				if (format & 1) content = `<strong>${content}</strong>`;
+				if (format & 2) content = `<em>${content}</em>`;
+
+				const id = textContent.toLowerCase().replace(/\s+/g, '-');
+
+				if (node.tag === 'h2') {
+					return <h2 id={id} set:html={content} />;
+				}
+				if (node.tag === 'h3') {
+					return <h3 id={id} set:html={content} />;
+				}
+				return <h3 id={id} set:html={content} />;
+			}
+
+			case 'quote':
+				return <blockquote set:html={textContent} />;
+
+			case 'link': {
+				const url = (node as any).url || '#';
+				return <a href={url} target="_blank" rel="noopener noreferrer" set:html={textContent} />;
+			}
+
+			case 'list': {
+				const ListTag = (node as any).listType === 'bullet' ? 'ul' : 'ol';
+				if (children && children.length > 0) {
+					return <ListTag><LexicalRenderer nodes={children} /></ListTag>;
+				}
+				return <ListTag />;
+			}
+
+			case 'listitem':
+				if (children && children.length > 0) {
+					return <li><LexicalRenderer nodes={children} /></li>;
+				}
+				return <li set:html={textContent} />;
+
+			case 'image': {
+				const src = (node as any).src || '';
+				const alt = (node as any).alt || '';
+				const caption = (node as any).caption || '';
+				return (
+					<figure>
+						<img src={src} alt={alt} loading="lazy" />
+						{caption && <figcaption class="text-sm text-text-muted mt-2 text-center" set:html={caption} />}
+					</figure>
+				);
+			}
+
+			default: {
+				let content = textContent;
+				if (format & 1) content = `<strong>${content}</strong>`;
+				if (format & 2) content = `<em>${content}</em>`;
+				return <span set:html={content} />;
+			}
+		}
+	})
+}

@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - develop
   pull_request:
     branches:
       - main
+      - develop
 
 jobs:
   lint:
@@ -104,11 +106,11 @@ jobs:
       - name: Build
         run: bun run build
         env:
-          PUBLIC_PAYLOAD_URL: ${{ secrets.PUBLIC_PAYLOAD_URL }}
+          PAYLOAD_URL: ${{ secrets.PAYLOAD_URL }}
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist/ --project-name=blog-personal-fluxdev-frontend
+          command: pages deploy dist/ --project-name=fluxblog-ui
