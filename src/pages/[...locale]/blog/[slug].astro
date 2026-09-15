@@ -2,7 +2,6 @@
 import Layout from "../../../layouts/Layout.astro";
 import { getPosts, type PayloadPost } from "../../../lib/payload";
 import PostContent from "../../../components/blog/PostContent.astro";
-import type { Locale } from "../../../i18n/dictionary";
 
 export async function getStaticPaths() {
 	const [esPosts, enPosts] = await Promise.all([
@@ -12,12 +11,12 @@ export async function getStaticPaths() {
 
 	const esPaths = esPosts.map((post) => ({
 		params: { locale: undefined, slug: post.slug },
-		props: { post, locale: "es" as Locale },
+		props: { post, locale: "es" as const },
 	}));
 
 	const enPaths = enPosts.map((post) => ({
 		params: { locale: "en", slug: post.slug },
-		props: { post, locale: "en" as Locale },
+		props: { post, locale: "en" as const },
 	}));
 
 	return [...esPaths, ...enPaths];
@@ -25,7 +24,7 @@ export async function getStaticPaths() {
 
 interface Props {
 	post: PayloadPost;
-	locale: Locale;
+	locale: 'es' | 'en';
 }
 
 const { post, locale } = Astro.props;

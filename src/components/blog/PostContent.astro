@@ -1,19 +1,20 @@
 ---
+import * as m from '@/paraglide/messages';
+import { localizeHref } from '@/paraglide/runtime';
 import type { PayloadPost } from "../../lib/payload";
 import FadeIn from "../ui/animations/FadeIn.astro";
 import IconArrowLeft from "../ui/icons/IconArrowLeft.astro";
 import LexicalRenderer from "./LexicalRenderer.astro";
-import { getDictionary, type Locale } from "../../i18n/dictionary";
 
 interface Props {
 	post: PayloadPost;
-	locale: Locale;
+	locale: 'es' | 'en';
 }
 
 const { post, locale } = Astro.props;
-const t = getDictionary(locale);
+const opt = { locale };
 
-const readingTime = `5 ${t.post.readingTime}`;
+const readingTime = `5 ${m.post_reading_time({}, opt)}`;
 const dateLocale = locale === 'en' ? 'en-US' : 'es-MX';
 const formatDate = (date: string) =>
     new Date(date).toLocaleDateString(dateLocale, {
@@ -21,13 +22,8 @@ const formatDate = (date: string) =>
         month: "short",
         year: "numeric",
     });
-const postDescription =
-    post.excerpt ||
-    post.content?.root?.children?.[0]?.children?.[0]?.text?.substring(0, 160) ||
-    "";
 
-const backUrl = locale === 'en' ? '/en' : '/';
-const blogUrl = locale === 'en' ? '/en/blog' : '/blog';
+const backUrl = localizeHref('/', opt);
 ---
 
 <nav class="mb-8">
@@ -37,7 +33,7 @@ const blogUrl = locale === 'en' ? '/en/blog' : '/blog';
             class="group inline-flex items-center text-xs font-bold tracking-widest uppercase text-text-muted hover:text-white transition-colors"
         >
             <IconArrowLeft class="w-3.5 h-3.5 mr-2 group-hover:-translate-x-1 transition-transform" />
-            {t.post.back}
+            {m.post_back({}, opt)}
         </a>
     </FadeIn>
 </nav>
@@ -72,7 +68,7 @@ const blogUrl = locale === 'en' ? '/en/blog' : '/blog';
                     FD
                 </div>
                 <span class="font-semibold text-text-primary">
-                    {post.author?.name || t.post.defaultAuthor}
+                    {post.author?.name || m.post_default_author({}, opt)}
                 </span>
             </div>
 

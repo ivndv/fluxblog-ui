@@ -2,6 +2,7 @@
 
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
+import { paraglideVitePlugin } from '@inlang/paraglide-js';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 
@@ -17,6 +18,24 @@ export default defineConfig({
 	},
 	integrations: [react(), sitemap()],
 	vite: {
-		plugins: [tailwindcss()],
+		plugins: [
+			tailwindcss(),
+			paraglideVitePlugin({
+				project: './project.inlang',
+				outdir: './src/paraglide',
+				emitTsDeclarations: true,
+				strategy: ['url', 'globalVariable', 'baseLocale'],
+				trailingSlash: 'always',
+				urlPatterns: [
+					{
+						pattern: '/:path(.*)?',
+						localized: [
+							['en', '/en/:path(.*)?'],
+							['es', '/:path(.*)?'],
+						],
+					},
+				],
+			}),
+		],
 	},
 });

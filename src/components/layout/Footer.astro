@@ -1,12 +1,13 @@
 ---
-import { getDictionary } from '../../i18n/dictionary';
+import * as m from '@/paraglide/messages';
+import { localizeHref } from '@/paraglide/runtime';
 import IconInstagram from '../ui/icons/IconInstagram.astro';
 import IconYoutube from '../ui/icons/IconYoutube.astro';
 import IconGithub from '../ui/icons/IconGithub.astro';
 
 const currentYear = new Date().getFullYear();
 const currentLocale = Astro.currentLocale === 'en' ? 'en' : 'es';
-const t = getDictionary(currentLocale);
+const opt = { locale: currentLocale };
 ---
 
 <footer class="border-t border-border-subtle mt-auto pt-16 pb-8">
@@ -17,7 +18,7 @@ const t = getDictionary(currentLocale);
         >
             <!-- Brand & Social -->
             <div class="flex flex-col gap-4">
-                <a href="/" class="flex items-center gap-2">
+                <a href={localizeHref('/', opt)} class="flex items-center gap-2">
                     <div
                         class="w-6 h-6 rounded-full bg-white flex items-center justify-center"
                     >
@@ -72,18 +73,18 @@ const t = getDictionary(currentLocale);
                 <h3
                     class="font-bold text-white uppercase tracking-wider text-sm"
                 >
-                    {t.footer.navigation}
+                    {m.footer_navigation({}, opt)}
                 </h3>
                 <ul class="flex flex-col gap-3 text-sm text-text-muted">
                     <li>
-                        <a href="/" class="hover:text-white transition-colors"
-                            >{t.footer.home}</a
+                        <a href={localizeHref('/', opt)} class="hover:text-white transition-colors"
+                            >{m.footer_home({}, opt)}</a
                         >
                     </li>
                     <li>
                         <a
-                            href="/about"
-                            class="hover:text-white transition-colors">{t.footer.about}</a
+                            href={localizeHref('/about', opt)}
+                            class="hover:text-white transition-colors">{m.footer_about({}, opt)}</a
                         >
                     </li>
                 </ul>
@@ -94,21 +95,21 @@ const t = getDictionary(currentLocale);
                 <h3
                     class="font-bold text-white uppercase tracking-wider text-sm"
                 >
-                    {t.footer.legal}
+                    {m.footer_legal({}, opt)}
                 </h3>
                 <ul class="flex flex-col gap-3 text-sm text-text-muted">
                     <li>
                         <a
-                            href="/legal/terms"
+                            href={localizeHref('/legal/terms', opt)}
                             class="hover:text-white transition-colors"
-                            >{t.footer.terms}</a
+                            >{m.footer_terms({}, opt)}</a
                         >
                     </li>
                     <li>
                         <a
-                            href="/legal/privacy"
+                            href={localizeHref('/legal/privacy', opt)}
                             class="hover:text-white transition-colors"
-                            >{t.footer.privacy}</a
+                            >{m.footer_privacy({}, opt)}</a
                         >
                     </li>
                 </ul>
@@ -119,7 +120,7 @@ const t = getDictionary(currentLocale);
                 <h3
                     class="font-bold text-white uppercase tracking-wider text-sm"
                 >
-                    {t.footer.subscribe}
+                    {m.footer_subscribe({}, opt)}
                 </h3>
                 <form
                     class="flex flex-col gap-3"
@@ -127,14 +128,14 @@ const t = getDictionary(currentLocale);
                 >
                     <input
                         type="email"
-                        placeholder={t.footer.emailPlaceholder}
+                        placeholder={m.footer_email_placeholder({}, opt)}
                         class="px-4 py-2 rounded-md border border-border-subtle bg-transparent text-text-muted text-sm focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
                     />
                     <button
                         type="submit"
                         class="px-4 py-2 rounded-md bg-white text-black font-medium text-sm hover:bg-neutral-200 transition-colors"
                     >
-                        {t.footer.subscribeButton}
+                        {m.footer_subscribe_button({}, opt)}
                     </button>
                 </form>
             </div>
@@ -145,7 +146,7 @@ const t = getDictionary(currentLocale);
             class="border-t border-border-subtle pt-8 flex flex-col items-center gap-4"
         >
             <p class="text-sm font-medium text-text-muted">
-                {t.footer.developedBy} <span class="font-bold text-white">Sinx</span>
+                {m.footer_developed_by({}, opt)} <span class="font-bold text-white">Sinx</span>
             </p>
             <div class="flex flex-wrap justify-center gap-2">
                 {
@@ -159,7 +160,7 @@ const t = getDictionary(currentLocale);
                 }
             </div>
             <p class="text-xs text-text-faint">
-                &copy; {currentYear} Fluxdev. {t.footer.allRightsReserved}
+                &copy; {currentYear} Fluxdev. {m.footer_all_rights_reserved({}, opt)}
             </p>
         </div>
     </div>
