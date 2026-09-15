@@ -36,8 +36,13 @@ export interface PayloadPost {
 	updatedAt: string;
 }
 
+function normalizePayloadUrl(rawUrl?: string): string {
+	const base = (rawUrl || 'http://localhost:3000/api').replace(/\/+$/, '');
+	return base.endsWith('/api') ? base : `${base}/api`;
+}
+
 // Se ejecuta solo en el servidor durante el build (SSG), por lo que PAYLOAD_URL es seguro y no se expone al cliente.
-const PAYLOAD_URL = import.meta.env.PAYLOAD_URL || 'http://localhost:3000/api';
+const PAYLOAD_URL = normalizePayloadUrl(import.meta.env.PAYLOAD_URL);
 
 export async function getPosts(locale: string = 'es'): Promise<PayloadPost[]> {
 	const url = `${PAYLOAD_URL}/posts?limit=100&sort=-createdAt&locale=${locale}`;

@@ -2,6 +2,11 @@ import type { Context } from 'hono';
 import { PayloadResponseSchema } from '../_shared/schema';
 import type { Env } from '../_shared/types';
 
+function normalizePayloadUrl(rawUrl?: string): string {
+	const base = (rawUrl || 'http://localhost:3000/api').replace(/\/+$/, '');
+	return base.endsWith('/api') ? base : `${base}/api`;
+}
+
 /**
  * Controlador para gestionar la obtención y consulta de artículos desde Payload CMS
  */
@@ -11,7 +16,7 @@ export const postsController = {
 	 */
 	async getPosts(c: Context<{ Bindings: Env }>) {
 		const locale = c.req.query('locale') || 'es';
-		const payloadUrl = c.env.PAYLOAD_URL || 'http://localhost:3000/api';
+		const payloadUrl = normalizePayloadUrl(c.env.PAYLOAD_URL);
 		const url = `${payloadUrl}/posts?limit=100&sort=-createdAt&locale=${locale}`;
 
 		try {
@@ -36,7 +41,7 @@ export const postsController = {
 	async getPostBySlug(c: Context<{ Bindings: Env }>) {
 		const slug = c.req.param('slug');
 		const locale = c.req.query('locale') || 'es';
-		const payloadUrl = c.env.PAYLOAD_URL || 'http://localhost:3000/api';
+		const payloadUrl = normalizePayloadUrl(c.env.PAYLOAD_URL);
 
 		if (!slug) {
 			return c.json({ error: 'Slug is required' }, 400);
