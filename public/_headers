@@ -1,24 +1,89 @@
-# Configuración de headers HTTP para despliegue en Cloudflare Pages (FluxDev Blog).
-
+# Security Headers - Aplicados a todas las rutas
 /*
+  # Previene clickjacking
   X-Frame-Options: DENY
+  
+  # Previene MIME-sniffing
   X-Content-Type-Options: nosniff
+  
+  # Protección XSS para navegadores legacy
+  X-XSS-Protection: 1; mode=block
+  
+  # Control de referrer
   Referrer-Policy: strict-origin-when-cross-origin
+  
+  # Deshabilita APIs no necesarias en el navegador
+  Permissions-Policy: camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+  
+  # Fuerza HTTPS por 1 año
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://umami.fluxdv.icu; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https: https://umami.fluxdv.icu https://static.cloudflareinsights.com; frame-ancestors 'none'; upgrade-insecure-requests;
+  
+  # Content Security Policy - Umami Analytics + Cloudflare Turnstile + Assets CDN + Payload CMS API
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com https://umami.fluxdv.icu https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; img-src 'self' data: https: https://assets.mgdc.site https://fluxblog-api.fluxdv.icu; font-src 'self' data:; connect-src 'self' https: https://cloudflareinsights.com https://umami.fluxdv.icu https://challenges.cloudflare.com https://fluxblog-api.fluxdv.icu; frame-src https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests;
 
-# Cache para assets estáticos
+# Cache Headers para Assets Estáticos compilados por Astro (JS, CSS)
+# Edge: 30 días | Browser: 1 año (inmutables porque tienen hash único en el nombre)
+/_astro/*
+  Cache-Control: public, max-age=31536000, s-maxage=2592000, immutable
+
 /*.js
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=31536000, s-maxage=2592000, immutable
+
 /*.css
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=31536000, s-maxage=2592000, immutable
+
+# Fuentes Web
+# Edge: 30 días | Browser: 1 año
 /*.woff2
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=31536000, s-maxage=2592000, immutable
+
+/*.woff
+  Cache-Control: public, max-age=31536000, s-maxage=2592000, immutable
+
+# Imágenes
+# Edge: 7 días | Browser: 1 año
 /*.png
-  Cache-Control: public, max-age=31536000
+  Cache-Control: public, max-age=31536000, s-maxage=604800
+
 /*.jpg
-  Cache-Control: public, max-age=31536000
+  Cache-Control: public, max-age=31536000, s-maxage=604800
+
+/*.jpeg
+  Cache-Control: public, max-age=31536000, s-maxage=604800
+
 /*.svg
-  Cache-Control: public, max-age=31536000
+  Cache-Control: public, max-age=31536000, s-maxage=604800
+
 /*.webp
-  Cache-Control: public, max-age=31536000
+  Cache-Control: public, max-age=31536000, s-maxage=604800
+
+/*.ico
+  Cache-Control: public, max-age=31536000, s-maxage=604800
+
+# HTML - Caché corto en edge, revalidación en navegador
+# Edge: 1 hora | Browser: revalidar siempre
+/*.html
+  Cache-Control: public, max-age=0, s-maxage=3600, must-revalidate
+
+# Manifest y Service Worker - Sin caché
+/manifest.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Archivos de indexación (SEO / Sitemaps / RSS / AI)
+/robots.txt
+  Cache-Control: public, max-age=86400, s-maxage=86400
+
+/sitemap-index.xml
+  Cache-Control: public, max-age=86400, s-maxage=86400
+
+/sitemap-0.xml
+  Cache-Control: public, max-age=86400, s-maxage=86400
+
+/rss.xml
+  Cache-Control: public, max-age=86400, s-maxage=86400
+
+/llms.txt
+  Cache-Control: public, max-age=86400, s-maxage=86400

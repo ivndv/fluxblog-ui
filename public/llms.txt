@@ -1,0 +1,33 @@
+# FluxDev Blog
+
+> Blog personal sobre desarrollo y tecnología. Artículos técnicos, arquitectura de software y mejores prácticas.
+
+## Secciones
+
+- [Inicio](https://fluxdev-nova.mgdc.site/)
+- [RSS Feed](https://fluxdev-nova.mgdc.site/rss.xml)
+
+## Detalles Técnicos
+
+- **Stack**: Astro 7, React 19, Tailwind CSS 4, TypeScript
+- **Headless CMS**: Payload CMS 3 (PostgreSQL)
+- **i18n**: Español (predeterminado) e Inglés
+- **Despliegue**: Cloudflare Pages
+
+---
+
+# FluxDev Blog (English)
+
+> Personal blog about software engineering and technology. Technical articles, software architecture, and best practices.
+
+## Sections
+
+- [Home](https://fluxdev-nova.mgdc.site/en)
+- [RSS Feed](https://fluxdev-nova.mgdc.site/rss.xml)
+
+## Technical Details
+
+- **Stack**: Astro 7, React 19, Tailwind CSS 4, TypeScript
+- **Headless CMS**: Payload CMS 3 (PostgreSQL)
+- **i18n**: Spanish (default) and English
+- **Deploy**: Cloudflare Pages
