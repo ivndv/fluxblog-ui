@@ -19,7 +19,7 @@ runs:
   steps:
     # 1. Configuración de Node.js
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v7
       with:
         node-version: ${{ inputs.node-version }}
 
@@ -31,7 +31,7 @@ runs:
 
     # 3. Caché de dependencias basado en el hash del lockfile (bun.lock)
     - name: Cache node_modules
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: node_modules
         key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
