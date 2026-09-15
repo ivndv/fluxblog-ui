@@ -1,0 +1,44 @@
+# Composite Action para configurar el entorno de ejecución en GitHub Actions
+# Centraliza instalación de Node.js, Bun, caché inteligente de node_modules e instalación de dependencias.
+
+name: Setup Bun env
+description: Setup Node, Bun, cache node_modules y bun install
+
+inputs:
+  bun-version:
+    description: Versión de Bun a instalar
+    required: false
+    default: "1.3.14"
+  node-version:
+    description: Versión de Node.js a configurar
+    required: false
+    default: "24.19.0"
+
+runs:
+  using: composite
+  steps:
+    # 1. Configuración de Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    # 2. Configuración de Bun
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: ${{ inputs.bun-version }}
+
+    # 3. Caché de dependencias basado en el hash del lockfile (bun.lock)
+    - name: Cache node_modules
+      uses: actions/cache@v4
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-bun-
+
+    # 4. Instalación de dependencias (se beneficia de la caché para reducir tiempos de build)
+    - name: Install dependencies
+      shell: bash
+      run: bun install
