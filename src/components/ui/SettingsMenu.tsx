@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { useStore } from '../store/store';
-import { getDictionary, type Locale } from '../i18n/dictionary';
+import { getDictionary, type Locale } from '../../i18n/dictionary';
+import { useStore } from '../../store/store';
 
 export default function SettingsMenu() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -8,12 +8,18 @@ export default function SettingsMenu() {
 	const menuRef = useRef<HTMLDivElement>(null);
 
 	// Detectar idioma actual desde la URL para el diccionario
-	const currentLocale: Locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/en') ? 'en' : 'es';
+	const currentLocale: Locale =
+		typeof window !== 'undefined' && window.location.pathname.startsWith('/en') ? 'en' : 'es';
 	const t = getDictionary(currentLocale);
 
-	// Sync theme class with document on mount and when theme changes
+	// Sync theme class with document on mount, when theme changes, and after page swaps
 	useEffect(() => {
-		document.documentElement.classList.toggle('light', theme === 'light');
+		const applyTheme = () => {
+			document.documentElement.classList.toggle('light', theme === 'light');
+		};
+		applyTheme();
+		document.addEventListener('astro:after-swap', applyTheme);
+		return () => document.removeEventListener('astro:after-swap', applyTheme);
 	}, [theme]);
 
 	// Sync language with URL on mount (Zustand persist will handle localStorage)
@@ -38,6 +44,8 @@ export default function SettingsMenu() {
 
 	function handleThemeChange(newTheme: 'dark' | 'light') {
 		setTheme(newTheme);
+		localStorage.setItem('theme', newTheme);
+		document.documentElement.classList.toggle('light', newTheme === 'light');
 	}
 
 	function handleLangChange(newLang: 'es' | 'en') {
@@ -182,12 +190,13 @@ export default function SettingsMenu() {
 
 			<style>{`
 				.animate-in {
-					animation: slideDown var(--duration-fast) var(--ease-smooth);
+					animation: popoverAppear 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+					transform-origin: top right;
 				}
-				@keyframes slideDown {
+				@keyframes popoverAppear {
 					from {
 						opacity: 0;
-						transform: translateY(-8px) scale(0.96);
+						transform: translateY(-4px) scale(0.97);
 					}
 					to {
 						opacity: 1;

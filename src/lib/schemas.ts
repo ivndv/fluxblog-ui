@@ -14,7 +14,7 @@ const LexicalNodeSchema: z.ZodType<any> = z.lazy(() =>
 		detail: z.number().optional(),
 		mode: z.string().optional(),
 		children: z.array(LexicalNodeSchema).optional(),
-	})
+	}),
 );
 
 export const LexicalContentSchema = z.object({

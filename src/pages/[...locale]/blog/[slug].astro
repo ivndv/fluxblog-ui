@@ -1,0 +1,43 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { getPosts, type PayloadPost } from "../../../lib/payload";
+import PostContent from "../../../components/blog/PostContent.astro";
+import type { Locale } from "../../../i18n/dictionary";
+
+export async function getStaticPaths() {
+	const [esPosts, enPosts] = await Promise.all([
+		getPosts("es"),
+		getPosts("en"),
+	]);
+
+	const esPaths = esPosts.map((post) => ({
+		params: { locale: undefined, slug: post.slug },
+		props: { post, locale: "es" as Locale },
+	}));
+
+	const enPaths = enPosts.map((post) => ({
+		params: { locale: "en", slug: post.slug },
+		props: { post, locale: "en" as Locale },
+	}));
+
+	return [...esPaths, ...enPaths];
+}
+
+interface Props {
+	post: PayloadPost;
+	locale: Locale;
+}
+
+const { post, locale } = Astro.props;
+
+const postDescription =
+	post.excerpt ||
+	post.content?.root?.children?.[0]?.children?.[0]?.text?.substring(0, 160) ||
+	"";
+---
+
+<Layout title={post.title} description={postDescription} lang={locale}>
+	<main class="max-w-3xl mx-auto px-6 py-8 md:py-14">
+		<PostContent post={post} locale={locale} />
+	</main>
+</Layout>

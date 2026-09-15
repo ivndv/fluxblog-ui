@@ -1,0 +1,91 @@
+---
+import type { PayloadPost } from "../../lib/payload";
+import FadeIn from "../ui/animations/FadeIn.astro";
+import IconArrowLeft from "../ui/icons/IconArrowLeft.astro";
+import LexicalRenderer from "./LexicalRenderer.astro";
+import { getDictionary, type Locale } from "../../i18n/dictionary";
+
+interface Props {
+	post: PayloadPost;
+	locale: Locale;
+}
+
+const { post, locale } = Astro.props;
+const t = getDictionary(locale);
+
+const readingTime = `5 ${t.post.readingTime}`;
+const dateLocale = locale === 'en' ? 'en-US' : 'es-MX';
+const formatDate = (date: string) =>
+    new Date(date).toLocaleDateString(dateLocale, {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
+const postDescription =
+    post.excerpt ||
+    post.content?.root?.children?.[0]?.children?.[0]?.text?.substring(0, 160) ||
+    "";
+
+const backUrl = locale === 'en' ? '/en' : '/';
+const blogUrl = locale === 'en' ? '/en/blog' : '/blog';
+---
+
+<nav class="mb-8">
+    <FadeIn direction="left">
+        <a
+            href={backUrl}
+            class="group inline-flex items-center text-xs font-bold tracking-widest uppercase text-text-muted hover:text-white transition-colors"
+        >
+            <IconArrowLeft class="w-3.5 h-3.5 mr-2 group-hover:-translate-x-1 transition-transform" />
+            {t.post.back}
+        </a>
+    </FadeIn>
+</nav>
+
+<header class="mb-10">
+    {post.tags && post.tags.length > 0 && (
+        <FadeIn direction="up">
+            <div class="flex flex-wrap gap-2 mb-4">
+                {post.tags.map((tag) => (
+                    <span class="text-xs font-bold text-brand tracking-wider uppercase">
+                        #{tag.value}
+                    </span>
+                ))}
+            </div>
+        </FadeIn>
+    )}
+
+    <FadeIn direction="up" delay={40}>
+        <h1
+            class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight text-white mb-6"
+        >
+            {post.title}
+        </h1>
+    </FadeIn>
+
+    <FadeIn direction="up" delay={80}>
+        <div class="flex flex-wrap items-center gap-4 pt-4 border-t border-border-subtle text-xs text-text-muted">
+            <div class="flex items-center gap-2.5">
+                <div
+                    class="w-7 h-7 rounded-full bg-surface-hover flex items-center justify-center font-bold text-[10px] text-white border border-white/10"
+                >
+                    FD
+                </div>
+                <span class="font-semibold text-text-primary">
+                    {post.author?.name || t.post.defaultAuthor}
+                </span>
+            </div>
+
+            <span class="w-1 h-1 bg-border-muted rounded-full"></span>
+            <span>{formatDate(post.date || post.createdAt)}</span>
+            <span class="w-1 h-1 bg-border-muted rounded-full"></span>
+            <span class="italic">{readingTime}</span>
+        </div>
+    </FadeIn>
+</header>
+
+<FadeIn direction="up" delay={80}>
+    <article class="article-content max-w-none">
+        <LexicalRenderer nodes={post.content?.root?.children || []} />
+    </article>
+</FadeIn>

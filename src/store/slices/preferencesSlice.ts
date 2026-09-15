@@ -17,7 +17,6 @@ export const createPreferencesSlice = (
 	theme: 'dark',
 	lang: 'es',
 	setTheme: (theme) => set({ theme }),
-	toggleTheme: () =>
-		set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
+	toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
 	setLang: (lang) => set({ lang }),
 });

@@ -24,8 +24,10 @@ export const dictionary = {
 			allRightsReserved: 'Todos los derechos reservados.',
 		},
 		home: {
-			title: 'Desarrollo de software, crecimiento personal, tutoriales y <span class="text-brand">un poco de mí.</span>',
-			description: '¡Bienvenido a mi blog! Estaré compartiendo artículos sobre desarrollo de software, tecnología y productividad. Mi objetivo es ayudarte a crecer tanto profesional como personalmente con base en mis estudios, experiencia y aprendizajes.',
+			badge: 'Blog & Notas Personales',
+			title: 'Desarrollo de software, tutoriales y <span class="text-brand">un poco de mí.</span>',
+			description:
+				'¡Bienvenido a mi blog! Estaré compartiendo artículos sobre desarrollo de software, tecnología y productividad. Mi objetivo es ayudarte a crecer tanto profesional como personalmente con base en mis estudios, experiencia y aprendizajes.',
 			popularTopics: 'Temas populares',
 			noTags: 'Sin tags aún',
 			readMore: 'Leer completo',
@@ -60,8 +62,10 @@ export const dictionary = {
 			allRightsReserved: 'All rights reserved.',
 		},
 		home: {
-			title: 'Software development, personal growth, tutorials, and <span class="text-brand">a bit about me.</span>',
-			description: 'Welcome to my blog! I\'ll be sharing articles about software development, tech and productivity. My goal is to help you grow professionally and personally based on my studies, experience, and learnings.',
+			badge: 'Blog & Personal Notes',
+			title: 'Software development, tutorials, and <span class="text-brand">a bit about me.</span>',
+			description:
+				"Welcome to my blog! I'll be sharing articles about software development, tech and productivity. My goal is to help you grow professionally and personally based on my studies, experience, and learnings.",
 			popularTopics: 'Popular topics',
 			noTags: 'No tags yet',
 			readMore: 'Read more',

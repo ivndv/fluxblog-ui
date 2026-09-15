@@ -1,7 +1,8 @@
 ---
+import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
 
 interface Props {
 	title: string;
@@ -13,12 +14,12 @@ interface Props {
 const {
 	title,
 	description = "Notas personales sobre arquitecturas, desarrollo web moderno y productos digitales.",
-	image = "/og-default.png",
+	image = "https://assets.mgdc.site/fluxblog/og-default.png",
 	lang = "es",
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const ogImageURL = new URL(image, Astro.site);
+const ogImageURL = image.startsWith("http") ? image : new URL(image, Astro.site).toString();
 ---
 
 <!doctype html>
@@ -26,8 +27,9 @@ const ogImageURL = new URL(image, Astro.site);
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="icon" type="image/png" href="/favicon.png" />
+		<link rel="icon" type="image/png" href="https://assets.mgdc.site/fluxblog/favicon.png" />
 		<meta name="generator" content={Astro.generator} />
+		<ClientRouter />
 
 		<!-- SEO -->
 		<title>{title} | FluxDev</title>
@@ -57,14 +59,30 @@ const ogImageURL = new URL(image, Astro.site);
 			href="/rss.xml"
 		/>
 
-		<!-- Anti-FOUC: Apply theme before first paint -->
+		<!-- Anti-FOUC & View Transitions Theme Sync -->
 		<script is:inline>
-			(function () {
-				const theme = localStorage.getItem("theme") || "dark";
+			const getStoredTheme = () => {
+				try {
+					const stored = localStorage.getItem("fluxblog-ui-store");
+					if (stored) {
+						const parsed = JSON.parse(stored);
+						if (parsed?.state?.theme) return parsed.state.theme;
+					}
+				} catch (e) {}
+				return localStorage.getItem("theme") || "dark";
+			};
+
+			const syncTheme = () => {
+				const theme = getStoredTheme();
 				if (theme === "light") {
 					document.documentElement.classList.add("light");
+				} else {
+					document.documentElement.classList.remove("light");
 				}
-			})();
+			};
+
+			syncTheme();
+			document.addEventListener("astro:after-swap", syncTheme);
 		</script>
 
 		<!-- Fonts -->

@@ -45,11 +45,14 @@
     --radius-button: 0.75rem;
     --radius-pill: 9999px;
 
-    /* ── Transitions ── */
-    --duration-fast: 200ms;
-    --duration-normal: 300ms;
-    --duration-slow: 500ms;
-    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    /* ── Transitions & Motion (Snappy Apple Spring) ── */
+    --duration-instant: 100ms;
+    --duration-fast: 150ms;
+    --duration-normal: 200ms;
+    --duration-slow: 300ms;
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-out-quad: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* ============================================
@@ -157,16 +160,16 @@ html.light {
 }
 
 .article-content p {
-    margin-bottom: 2.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .article-content h2 {
     color: var(--color-text-heading);
-    font-size: 1.875rem;
+    font-size: 1.75rem;
     font-weight: 700;
     letter-spacing: -0.025em;
-    margin-top: 5rem;
-    margin-bottom: 2rem;
+    margin-top: 2.75rem;
+    margin-bottom: 1rem;
 }
 
 .article-content h3 {
@@ -174,8 +177,8 @@ html.light {
     font-size: 1.25rem;
     font-weight: 700;
     letter-spacing: -0.025em;
-    margin-top: 3rem;
-    margin-bottom: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
 }
 
 .article-content strong {
@@ -198,9 +201,9 @@ html.light {
     border-left: 2px solid var(--color-brand);
     background: var(--color-surface-raised);
     color: var(--color-text-primary);
-    padding: 1.5rem 2.5rem;
-    border-radius: 0 1.5rem 1.5rem 0;
-    margin: 2rem 0;
+    padding: 1.25rem 2rem;
+    border-radius: 0 1rem 1rem 0;
+    margin: 1.75rem 0;
 }
 
 .article-content code {
@@ -251,13 +254,13 @@ html.light {
 }
 
 /* ============================================
-   ANIMATIONS (Zero JS)
+   ANIMATIONS (Zero JS — Snappy & Modern)
    ============================================ */
 
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(8px);
     }
     to {
         opacity: 1;
@@ -268,7 +271,7 @@ html.light {
 @keyframes fadeInDown {
     from {
         opacity: 0;
-        transform: translateY(-20px);
+        transform: translateY(-8px);
     }
     to {
         opacity: 1;
@@ -279,7 +282,7 @@ html.light {
 @keyframes fadeInLeft {
     from {
         opacity: 0;
-        transform: translateX(-20px);
+        transform: translateX(-8px);
     }
     to {
         opacity: 1;
@@ -290,7 +293,7 @@ html.light {
 @keyframes fadeInRight {
     from {
         opacity: 0;
-        transform: translateX(20px);
+        transform: translateX(8px);
     }
     to {
         opacity: 1;
@@ -299,17 +302,17 @@ html.light {
 }
 
 .animate-fade-in-up {
-    animation: fadeInUp var(--duration-normal, 300ms) var(--ease-smooth, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
+    animation: fadeInUp var(--duration-normal, 200ms) var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1)) both;
 }
 
 .animate-fade-in-down {
-    animation: fadeInDown var(--duration-normal, 300ms) var(--ease-smooth, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
+    animation: fadeInDown var(--duration-normal, 200ms) var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1)) both;
 }
 
 .animate-fade-in-left {
-    animation: fadeInLeft var(--duration-normal, 300ms) var(--ease-smooth, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
+    animation: fadeInLeft var(--duration-normal, 200ms) var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1)) both;
 }
 
 .animate-fade-in-right {
-    animation: fadeInRight var(--duration-normal, 300ms) var(--ease-smooth, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
+    animation: fadeInRight var(--duration-normal, 200ms) var(--ease-spring, cubic-bezier(0.16, 1, 0.3, 1)) both;
 }

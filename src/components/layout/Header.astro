@@ -1,0 +1,28 @@
+---
+import SettingsMenu from "../ui/SettingsMenu.tsx";
+---
+
+<header
+    transition:persist
+    class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-surface-overlay/80 border-b border-border-subtle"
+>
+    <nav class="max-w-6xl mx-auto px-6 md:px-8 h-14 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2.5 group">
+            <img 
+                src="https://assets.mgdc.site/fluxblog/logo.png" 
+                alt="FluxDev Logo" 
+                class="w-7 h-7 rounded-full object-cover group-hover:scale-105 transition-transform border border-white/10" 
+            />
+            <span
+                class="text-xs font-bold tracking-[0.18em] uppercase text-text-muted group-hover:text-white transition-colors"
+            >
+                FluxDev
+            </span>
+        </a>
+
+        <SettingsMenu client:load />
+    </nav>
+</header>
+
+<!-- Spacer to prevent content from hiding behind fixed header -->
+<div class="h-14"></div>
