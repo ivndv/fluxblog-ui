@@ -1,13 +1,44 @@
 ---
+import * as m from '@/paraglide/messages';
 import SettingsMenu from "../ui/SettingsMenu.tsx";
+import SearchDialog from "../ui/SearchDialog.tsx";
+import { paths, type Locale } from "../../lib/routes";
+
+const locale: Locale = Astro.currentLocale === 'en' ? 'en' : 'es';
+const opt = { locale };
+
+const pathname = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const homePath = paths.home(locale).replace(/\/+$/, '') || '/';
+const blogPath = paths.blog(locale);
+const aboutPath = paths.about(locale);
+
+const links = [
+	{
+		href: paths.home(locale),
+		label: m.nav_home({}, opt),
+		active: pathname === homePath,
+	},
+	{
+		href: blogPath,
+		label: m.nav_posts({}, opt),
+		active:
+			pathname.startsWith(blogPath) ||
+			pathname.startsWith(locale === 'es' ? '/etiquetas' : '/en/tags'),
+	},
+	{
+		href: aboutPath,
+		label: m.nav_about({}, opt),
+		active: pathname.startsWith(aboutPath),
+	},
+];
 ---
 
 <header
-    transition:persist
+    data-pagefind-ignore
     class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-surface-overlay/80 border-b border-border-subtle"
 >
-    <nav class="max-w-6xl mx-auto px-6 md:px-8 h-14 flex items-center justify-between">
-        <a href="/" class="flex items-center gap-2.5 group">
+    <nav class="max-w-6xl mx-auto px-6 md:px-8 h-14 flex items-center justify-between gap-6">
+        <a href={paths.home(locale)} class="flex items-center gap-2.5 group shrink-0">
             <img 
                 src="https://assets.mgdc.site/fluxblog/logo.png" 
                 alt="FluxDev Logo" 
@@ -20,9 +51,77 @@ import SettingsMenu from "../ui/SettingsMenu.tsx";
             </span>
         </a>
 
-        <SettingsMenu client:load />
+        <div class="flex items-center gap-1">
+            <details data-mobile-nav class="relative sm:hidden">
+                <summary
+                    aria-label={m.nav_menu({}, opt)}
+                    class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-button text-text-muted transition-colors hover:bg-surface-raised hover:text-white [&::-webkit-details-marker]:hidden"
+                >
+                    <svg
+                        class="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </summary>
+
+                <div
+                    class="absolute right-0 top-[calc(100%+0.35rem)] w-48 rounded-xl border border-border-subtle bg-surface-base/95 p-2 shadow-2xl backdrop-blur-xl"
+                >
+                    {links.map((link) => (
+                        <a
+                            href={link.href}
+                            aria-current={link.active ? 'page' : undefined}
+                            class:list={[
+                                'flex min-h-11 items-center rounded-button px-3 text-sm font-semibold transition-colors',
+                                link.active
+                                    ? 'bg-surface-hover text-white'
+                                    : 'text-text-muted hover:bg-surface-raised hover:text-white',
+                            ]}
+                        >
+                            {link.label}
+                        </a>
+                    ))}
+                </div>
+            </details>
+
+            <div class="hidden sm:flex items-center gap-1 mr-2">
+                {links.map((link) => (
+                    <a
+                        href={link.href}
+                        aria-current={link.active ? 'page' : undefined}
+                        class:list={[
+                            'rounded-button px-3 py-1.5 text-xs font-semibold transition-colors',
+                            link.active
+                                ? 'bg-surface-hover text-white'
+                                : 'text-text-muted hover:bg-surface-raised hover:text-white',
+                        ]}
+                    >
+                        {link.label}
+                    </a>
+                ))}
+            </div>
+
+            <SearchDialog client:idle locale={locale} />
+
+            <SettingsMenu client:load />
+        </div>
     </nav>
 </header>
 
 <!-- Spacer to prevent content from hiding behind fixed header -->
 <div class="h-14"></div>
+
+<script>
+	document.addEventListener('click', (event) => {
+		const target = event.target as HTMLElement;
+
+		document.querySelectorAll<HTMLDetailsElement>('details[data-mobile-nav]').forEach((details) => {
+			if (!details.contains(target)) details.removeAttribute('open');
+		});
+	});
+</script>

@@ -33,17 +33,17 @@ Guía operativa y técnica para agentes de Inteligencia Artificial que colaboren
 
 | Capa | Tecnología | Versión / Detalle |
 | :--- | :--- | :--- |
-| **Runtime & Gestor** | **Bun** | `v1.3.x` (`bun.lock`) |
-| **Framework Web & SSG** | **Astro 7** | `astro ^7.3.2` (Arquitectura en Islas, rutas estáticas) |
-| **Integraciones de Astro** | **@astrojs/react, sitemap, rss** | `@astrojs/react ^6.0.5`, `@astrojs/sitemap ^3.7.4`, `@astrojs/rss ^4.0.19` |
-| **Librería de Componentes** | **React 19** | `react ^19.3.0`, `react-dom ^19.3.0`, `@types/react ^19.3.0` |
+| **Runtime & Gestor** | **Bun / Node** | `Bun v1.4.x` (`bun.lock`), `Node >=22.23.4` |
+| **Framework Web & SSG** | **Astro 7** | `astro ^7.4.4` (Arquitectura en Islas, rutas estáticas) |
+| **Integraciones de Astro** | **@astrojs/react, sitemap, rss** | `@astrojs/react ^7.1.2`, `@astrojs/sitemap ^3.7.4`, `@astrojs/rss ^4.0.19` |
+| **Librería de Componentes** | **React 19** | `react 19.3.1`, `react-dom 19.3.1`, `@types/react 19.3.0` |
 | **Estilos & Tipografía** | **Tailwind CSS 4** | `tailwindcss ^4.3.3`, `@tailwindcss/vite ^4.3.3`, `@tailwindcss/typography ^0.5.20` |
-| **Estado Global del Cliente** | **Zustand 5** | `zustand ^5.0.15` (Slices modulares en `src/store/slices/preferencesSlice.ts`) |
-| **Renderizado de Contenido** | **Lexical AST + Marked** | Componente nativo `LexicalRenderer.astro` y `marked ^18.0.13` |
-| **Validación de Esquemas** | **Zod 4** | `zod ^4.6.5` (`src/lib/schemas.ts`) |
-| **Internacionalización (i18n)** | **Astro i18n nativo** | Rutas `/` (ES) y `/en/` (EN), diccionario en `src/i18n/dictionary.ts` |
-| **Linter & Formatter** | **Biome 2** | `@biomejs/biome ^2.5.13` (`biome.json` con preset recomendado) |
-| **Testing Automatizado** | **Vitest 5** | `vitest ^5.0.1`, `@vitejs/plugin-react ^6.1.1`, `@testing-library/react ^16.3.3`, `jsdom` |
+| **Estado Global del Cliente** | **Zustand 5** | `zustand ^5.0.16` (Slices modulares en `src/store/slices/preferencesSlice.ts`) |
+| **Renderizado de Contenido** | **Lexical AST + Marked** | Componente nativo `LexicalRenderer.astro` y `marked ^18.1.2` |
+| **Validación de Esquemas** | **Zod 4** | `zod ^4.6.7` (`src/lib/schemas.ts`) |
+| **Internacionalización (i18n)** | **Paraglide + Astro i18n** | Rutas localizadas: ES `/articulos`, `/etiquetas`, `/acerca`, `/buscar`; EN `/en/blog`, `/en/tags`, `/en/about`, `/en/search`. Mapa central en `src/lib/routes.ts` |
+| **Linter & Formatter** | **Biome 2** | `@biomejs/biome ^2.6.4` (`biome.json` con preset recomendado) |
+| **Testing Automatizado** | **Vitest 5** | `vitest ^5.0.5`, `@vitejs/plugin-react ^6.1.2`, `@testing-library/react ^16.3.3`, `jsdom` |
 | **Infraestructura Edge** | **Cloudflare Pages** | Despliegue estático global con Pages Functions en `functions/` (`wrangler.toml`) |
 
 ---
@@ -63,43 +63,80 @@ fluxblog-ui/
 ├── src/                           → Código fuente de la aplicación Astro + React
 │   ├── components/                → Componentes UI organizados por dominio
 │   │   ├── blog/                  → Dominio de posts y contenido
-│   │   │   ├── HomeContent.astro  → Listado y maquetación de la página principal
+│   │   │   ├── AuthorCard.astro   → Tarjeta del autor al final del post
+│   │   │   ├── Hero.astro         → Hero de la portada (bio, CTAs, avatar)
+│   │   │   ├── HomeContent.astro  → Portada: solo el hero
 │   │   │   ├── LexicalRenderer.astro → Renderizador nativo de nodos Lexical AST a HTML
-│   │   │   └── PostContent.astro  → Estructura del cuerpo de cada artículo
+│   │   │   ├── Pagination.astro   → Paginación estática del índice
+│   │   │   ├── PostCard.astro     → Tarjeta reutilizable de post
+│   │   │   ├── PostContent.astro  → Cuerpo del post (portada, TOC, share, autor)
+│   │   │   ├── PostNavigation.astro → Anterior / siguiente
+│   │   │   ├── RelatedPosts.astro → Artículos relacionados por tags
+│   │   │   ├── ShareLinks.astro   → X, LinkedIn y copiar enlace
+│   │   │   ├── TableOfContents.astro → TOC desde headings del AST
+│   │   │   └── TagPill.astro      → Chip de etiqueta
 │   │   ├── layout/                → Dominio de estructura y layout
 │   │   │   ├── Footer.astro       → Pie de página institucional y enlaces
 │   │   │   └── Header.astro       → Barra de navegación y acceso a settings
+│   │   ├── pages/                 → Vistas compartidas entre rutas ES/EN
+│   │   │   ├── AboutPage.astro     → Página /acerca (texto desde Paraglide)
+│   │   │   ├── BlogIndexPage.astro → Índice con tags y paginación
+│   │   │   ├── BlogPostPage.astro  → Layout de un post
+│   │   │   ├── LegalPage.astro     → Términos y privacidad
+│   │   │   ├── SearchPage.astro    → Página de resultados de Pagefind (fallback)
+│   │   │   └── TagPage.astro       → Listado por etiqueta
 │   │   └── ui/                    → Dominio de UI atómica e interactiva
 │   │       ├── animations/        → Transiciones visuales (FadeIn.astro)
 │   │       ├── icons/             → Iconografía SVG optimizada (Moon, Sun, Github, etc.)
 │   │       ├── SettingsMenu.test.ts → Tests unitarios del menú de ajustes
+│   │       ├── SearchDialog.tsx   → Modal de búsqueda Pagefind (Cmd/Ctrl+K)
 │   │       └── SettingsMenu.tsx   → Componente interactivo React (selector de tema e idioma)
-│   ├── i18n/                      → Diccionarios de traducción (ES / EN)
-│   │   └── dictionary.ts          → Textos de interfaz estáticos localizados
 │   ├── layouts/                   → Plantillas maestras de HTML
 │   │   └── Layout.astro           → Base HTML, metatags OpenGraph y scripts globales
 │   ├── lib/                       → Clientes de API, servicios y esquemas
+│   │   ├── pagination.ts          → POSTS_PER_PAGE y getVisiblePages
 │   │   ├── payload.test.ts        → Tests unitarios del cliente de Payload
 │   │   ├── payload.ts             → Cliente Fetch tipado para la API de Payload CMS
-│   │   └── schemas.ts             → Esquemas Zod para validar respuestas de posts
+│   │   ├── post-utils.ts          → extractText, excerpt, reading time, headings y fechas
+│   │   ├── related.ts              → rankRelatedPosts y getAdjacentPosts
+│   │   ├── routes.ts              → Mapa de URLs ES/EN y translatePath
+│   │   ├── schemas.ts             → Esquemas Zod para validar respuestas de posts
+│   │   └── tags.ts                → Extracción de etiquetas únicas
 │   ├── pages/                     → Enrutamiento basado en archivos de Astro
-│   │   ├── [...locale]/           → Rutas dinámicas multilingües unificadas
-│   │   │   ├── blog/              → Rutas dinámicas de posts
-│   │   │   │   └── [slug].astro   → Vista individual de post (ES y EN vía getStaticPaths)
-│   │   │   └── index.astro        → Home unificada (/ y /en/)
-│   │   └── rss.xml.ts             → Generador de feed RSS sindicado
-│   ├── store/                     → Manejo de estado del cliente con Zustand
+│   │   ├── [...locale]/           → Home unificada (/ y /en/)
+│   │   │   └── index.astro
+│   │   ├── articulos/             → Rutas ES
+│   │   │   ├── index.astro        → /articulos
+│   │   │   ├── [slug].astro       → /articulos/[slug]
+│   │   │   └── page/[page].astro  → /articulos/page/[page]
+│   │   ├── en/
+│   │   │   ├── about.astro        → /en/about
+│   │   │   ├── blog/              → /en/blog, /en/blog/[slug], /en/blog/page/[page]
+│   │   │   ├── legal/[doc].astro  → /en/legal/terms|privacy
+│   │   │   ├── rss.xml.ts         → Feed RSS (EN)
+│   │   │   ├── search.astro       → /en/search
+│   │   │   └── tags/[tag].astro   → /en/tags/[tag]
+│   │   ├── acerca.astro           → /acerca
+│   │   ├── buscar.astro           → /buscar
+│   │   ├── etiquetas/[tag].astro  → /etiquetas/[tag]
+│   │   ├── legal/[doc].astro      → /legal/terminos|privacidad
+│   │   ├── 404.astro              → Página 404 bilingüe
+│   │   └── rss.xml.ts             → Feed RSS (ES)
+│   ├── store/                     → Estado del cliente con Zustand (solo tema)
 │   │   ├── slices/                → Slices de estado (preferencesSlice.ts)
 │   │   └── store.ts               → Store unificado con persistencia
 │   ├── styles/                    → Hojas de estilo globales
 │   │   └── global.css             → Directivas de Tailwind CSS 4 y variables CSS
 │   └── test/                      → Configuración de pruebas
 │       └── setup.ts               → Setup y matchers de testing library
+├── messages/                      → Traducciones de UI (Paraglide/inlang)
+│   ├── es.json
+│   └── en.json
 ├── astro.config.mjs               → Configuración central de Astro (integraciones y routing)
 ├── biome.json                     → Configuración de formateo y reglas de Biome
 ├── tsconfig.json                  → Configuración estricta de TypeScript
 ├── vitest.config.ts               → Configuración de tests unitarios con Vitest y plugin React
-└── wrangler.toml                  → Configuración de Cloudflare Pages
+└── wrangler.json                  → Configuración de Cloudflare Pages
 ```
 
 ---
@@ -115,6 +152,7 @@ bun run dev
 bun run dev:full
 
 # Compilar sitio estático para producción (directorio dist/)
+# Incluye Pagefind: genera índices de búsqueda ES y EN
 bun run build
 
 # Previsualizar el build estático localmente

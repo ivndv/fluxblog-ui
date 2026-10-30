@@ -1,0 +1,15 @@
+---
+import * as m from '@/paraglide/messages';
+import Layout from '../../layouts/Layout.astro';
+import SearchPage from '../../components/pages/SearchPage.astro';
+
+const locale = 'en' as const;
+const title = m.search_title({}, { locale });
+const description = m.search_description({}, { locale });
+---
+
+<Layout title={title} description={description} lang={locale}>
+	<main class="max-w-3xl mx-auto px-6 py-8 md:py-14">
+		<SearchPage locale={locale} />
+	</main>
+</Layout>
