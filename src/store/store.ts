@@ -13,7 +13,6 @@ export const useStore = create<StoreState>()(
 			name: 'fluxblog-ui-store',
 			partialize: (state) => ({
 				theme: state.theme,
-				lang: state.lang,
 			}),
 		},
 	),

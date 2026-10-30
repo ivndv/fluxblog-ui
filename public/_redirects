@@ -1,0 +1,4 @@
+# Legacy URLs from the previous deployment.
+# Spanish posts moved from /blog/* to /articulos/*.
+/blog /articulos 301
+/blog/* /articulos/:splat 301

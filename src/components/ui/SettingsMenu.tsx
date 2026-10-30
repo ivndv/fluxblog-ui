@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import * as m from '@/paraglide/messages';
+import { getLocaleFromPath, type Locale, translatePath } from '../../lib/routes';
 import { useStore } from '../../store/store';
 
 export default function SettingsMenu() {
 	const [isOpen, setIsOpen] = useState(false);
-	const { theme, lang, setTheme, setLang } = useStore();
+	const { theme, setTheme } = useStore();
 	const menuRef = useRef<HTMLDivElement>(null);
 
-	// Detectar idioma actual desde la URL para Paraglide
-	const currentLocale: 'es' | 'en' =
-		typeof window !== 'undefined' && window.location.pathname.startsWith('/en') ? 'en' : 'es';
+	// El idioma real vive en la URL; el store solo guarda el tema.
+	const currentLocale: Locale =
+		typeof window !== 'undefined' ? getLocaleFromPath(window.location.pathname) : 'es';
 	const opt = { locale: currentLocale };
 
 	// Sync theme class with document on mount, when theme changes, and after page swaps
@@ -21,15 +22,6 @@ export default function SettingsMenu() {
 		document.addEventListener('astro:after-swap', applyTheme);
 		return () => document.removeEventListener('astro:after-swap', applyTheme);
 	}, [theme]);
-
-	// Sync language with URL on mount (Zustand persist will handle localStorage)
-	useEffect(() => {
-		const path = window.location.pathname;
-		const urlLang = path.startsWith('/en') ? 'en' : 'es';
-		if (urlLang !== lang) {
-			setLang(urlLang);
-		}
-	}, [lang, setLang]);
 
 	// Close dropdown when clicking outside
 	useEffect(() => {
@@ -48,16 +40,17 @@ export default function SettingsMenu() {
 		document.documentElement.classList.toggle('light', newTheme === 'light');
 	}
 
-	function handleLangChange(newLang: 'es' | 'en') {
-		if (newLang === lang) return;
-		setLang(newLang);
+	function handleLangChange(newLang: Locale) {
+		// Read the locale at click time: view transitions may keep this island mounted.
+		const activeLocale = getLocaleFromPath(window.location.pathname);
+		if (newLang === activeLocale) return;
 
-		const path = window.location.pathname;
-		if (newLang === 'en') {
-			window.location.href = `/en${path}`;
-		} else {
-			window.location.href = path.replace(/^\/en/, '') || '/';
-		}
+		// Layout renders <link rel="alternate" hreflang> once translations exist (posts with different slugs).
+		const alternate = document
+			.querySelector<HTMLLinkElement>(`link[rel="alternate"][hreflang="${newLang}"]`)
+			?.getAttribute('href');
+
+		window.location.href = alternate || translatePath(window.location.pathname, newLang);
 	}
 
 	return (
@@ -66,7 +59,7 @@ export default function SettingsMenu() {
 			<button
 				type="button"
 				onClick={() => setIsOpen(!isOpen)}
-				className="p-2 rounded-button text-text-muted hover:text-white hover:bg-surface-raised transition-all duration-normal"
+				className="flex h-11 w-11 items-center justify-center rounded-button text-text-muted hover:text-white hover:bg-surface-raised transition-all duration-normal"
 				aria-label="Settings"
 			>
 				<svg
@@ -165,7 +158,7 @@ export default function SettingsMenu() {
 								type="button"
 								onClick={() => handleLangChange('es')}
 								className={`flex-1 px-3 py-2 rounded-button text-xs font-semibold transition-all ${
-									lang === 'es'
+									currentLocale === 'es'
 										? 'bg-surface-hover text-text-heading'
 										: 'text-text-muted hover:text-text-secondary hover:bg-surface-raised'
 								}`}
@@ -176,7 +169,7 @@ export default function SettingsMenu() {
 								type="button"
 								onClick={() => handleLangChange('en')}
 								className={`flex-1 px-3 py-2 rounded-button text-xs font-semibold transition-all ${
-									lang === 'en'
+									currentLocale === 'en'
 										? 'bg-surface-hover text-text-heading'
 										: 'text-text-muted hover:text-text-secondary hover:bg-surface-raised'
 								}`}
