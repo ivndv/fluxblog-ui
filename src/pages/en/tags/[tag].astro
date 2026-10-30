@@ -1,0 +1,37 @@
+---
+import * as m from '@/paraglide/messages';
+import Layout from '../../../layouts/Layout.astro';
+import TagPage from '../../../components/pages/TagPage.astro';
+import { getAllPosts } from '../../../lib/payload';
+
+const locale = 'en' as const;
+const opt = { locale };
+
+export async function getStaticPaths() {
+	const posts = await getAllPosts('en');
+	const tags = [
+		...new Set(posts.flatMap((post) => post.tags?.map((tag) => tag.value) ?? [])),
+	];
+
+	return tags.map((tag) => ({ params: { tag }, props: { tag } }));
+}
+
+interface Props {
+	tag: string;
+}
+
+const { tag } = Astro.props as Props;
+
+const allPosts = await getAllPosts(locale);
+const posts = allPosts.filter((post) =>
+	post.tags?.some((postTag) => postTag.value === tag),
+);
+
+const description = m.blog_tag_posts({}, opt);
+---
+
+<Layout title={`#${tag}`} description={description} lang={locale}>
+	<main class="max-w-3xl mx-auto px-6 py-8 md:py-14">
+		<TagPage tag={tag} posts={posts} locale={locale} />
+	</main>
+</Layout>

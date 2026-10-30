@@ -1,0 +1,61 @@
+---
+import * as m from '@/paraglide/messages';
+import type { PayloadPost } from '../../lib/payload';
+import { paths, type Locale } from '../../lib/routes';
+import FadeIn from '../ui/animations/FadeIn.astro';
+import IconArrowLeft from '../ui/icons/IconArrowLeft.astro';
+import PostCard from '../blog/PostCard.astro';
+
+interface Props {
+	tag: string;
+	posts: PayloadPost[];
+	locale: Locale;
+}
+
+const { tag, posts, locale } = Astro.props;
+const opt = { locale };
+---
+
+<header class="mb-10">
+	<FadeIn direction="up">
+		<a
+			href={paths.blog(locale)}
+			class="group inline-flex items-center text-xs font-bold tracking-widest uppercase text-text-muted hover:text-white transition-colors"
+		>
+			<IconArrowLeft class="w-3.5 h-3.5 mr-2 group-hover:-translate-x-1 transition-transform" />
+			{m.blog_back_to_posts({}, opt)}
+		</a>
+	</FadeIn>
+
+	<FadeIn direction="up" delay={40}>
+		<h1 class="mt-5 text-3xl md:text-4xl font-bold tracking-tight text-white">
+			<span class="text-brand">#</span>{tag}
+		</h1>
+	</FadeIn>
+
+	<FadeIn direction="up" delay={80}>
+		<p class="mt-3 text-sm text-text-muted">
+			{m.blog_tag_posts({}, opt)} · {posts.length}
+		</p>
+	</FadeIn>
+</header>
+
+{
+	posts.length > 0 ? (
+		<section class="space-y-5">
+			{posts.map((post, index) => (
+				<PostCard
+					post={post}
+					locale={locale}
+					delay={Math.min(index * 40, 160)}
+				>
+					<Fragment slot="read-more">{m.home_read_more({}, opt)}</Fragment>
+				</PostCard>
+			))}
+		</section>
+	) : (
+		<p class="rounded-2xl border border-border-subtle bg-surface-raised p-6 text-sm text-text-muted">
+			{m.home_empty({}, opt)}
+		</p>
+	)
+}

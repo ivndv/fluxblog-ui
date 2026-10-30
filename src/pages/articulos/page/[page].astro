@@ -1,0 +1,49 @@
+---
+import * as m from '@/paraglide/messages';
+import Layout from '../../../layouts/Layout.astro';
+import BlogIndexPage from '../../../components/pages/BlogIndexPage.astro';
+import { POSTS_PER_PAGE } from '../../../lib/pagination';
+import { getPosts } from '../../../lib/payload';
+import { getTags } from '../../../lib/tags';
+
+const locale = 'es' as const;
+
+export async function getStaticPaths() {
+	const { totalPages } = await getPosts({
+		locale: 'es',
+		page: 1,
+		limit: POSTS_PER_PAGE,
+	});
+
+	return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => {
+		const page = index + 2;
+		return { params: { page: String(page) }, props: { page } };
+	});
+}
+
+interface Props {
+	page: number;
+}
+
+const { page } = Astro.props as Props;
+
+const [{ docs: posts, totalPages }, tags] = await Promise.all([
+	getPosts({ locale, page, limit: POSTS_PER_PAGE }),
+	getTags(locale),
+]);
+
+const title = m.blog_title({}, { locale });
+const description = m.blog_description({}, { locale });
+---
+
+<Layout title={`${title} · ${page}`} description={description} lang={locale}>
+	<main class="max-w-3xl mx-auto px-6 py-8 md:py-14">
+		<BlogIndexPage
+			posts={posts}
+			locale={locale}
+			currentPage={page}
+			totalPages={totalPages}
+			tags={tags}
+		/>
+	</main>
+</Layout>

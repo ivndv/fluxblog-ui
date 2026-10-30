@@ -1,0 +1,29 @@
+---
+import * as m from '@/paraglide/messages';
+import Layout from '../../layouts/Layout.astro';
+import LegalPage from '../../components/pages/LegalPage.astro';
+import type { LegalDoc } from '../../lib/routes';
+
+const locale = 'es' as const;
+
+export function getStaticPaths() {
+	return [
+		{ params: { doc: 'terminos' }, props: { doc: 'terms' as LegalDoc } },
+		{ params: { doc: 'privacidad' }, props: { doc: 'privacy' as LegalDoc } },
+	];
+}
+
+interface Props {
+	doc: LegalDoc;
+}
+
+const { doc } = Astro.props as Props;
+const title =
+	doc === 'terms' ? m.legal_terms({}, { locale }) : m.legal_privacy({}, { locale });
+---
+
+<Layout title={title} description={title} lang={locale}>
+	<main class="max-w-3xl mx-auto px-6 py-8 md:py-14">
+		<LegalPage doc={doc} locale={locale} />
+	</main>
+</Layout>

@@ -1,0 +1,49 @@
+---
+import * as m from '@/paraglide/messages';
+import { paths, type LegalDoc, type Locale } from '../../lib/routes';
+import FadeIn from '../ui/animations/FadeIn.astro';
+import IconArrowLeft from '../ui/icons/IconArrowLeft.astro';
+
+interface Props {
+	doc: LegalDoc;
+	locale: Locale;
+}
+
+const { doc, locale } = Astro.props;
+const opt = { locale };
+
+const title =
+	doc === 'terms' ? m.legal_terms({}, opt) : m.legal_privacy({}, opt);
+const rawContent =
+	doc === 'terms'
+		? m.legal_terms_content({}, opt)
+		: m.legal_privacy_content({}, opt);
+const paragraphs = rawContent
+	.split('\n\n')
+	.map((paragraph) => paragraph.trim())
+	.filter(Boolean);
+---
+
+<article class="max-w-3xl">
+	<FadeIn direction="up">
+		<a
+			href={paths.home(locale)}
+			class="group inline-flex items-center text-xs font-bold tracking-widest uppercase text-text-muted hover:text-white transition-colors"
+		>
+			<IconArrowLeft class="w-3.5 h-3.5 mr-2 group-hover:-translate-x-1 transition-transform" />
+			{m.legal_back_home({}, opt)}
+		</a>
+	</FadeIn>
+
+	<FadeIn direction="up" delay={40}>
+		<h1 class="mt-5 text-3xl md:text-4xl font-bold tracking-tight text-white">
+			{title}
+		</h1>
+	</FadeIn>
+
+	<FadeIn direction="up" delay={80}>
+		<div class="mt-8 space-y-4 text-text-secondary leading-relaxed">
+			{paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+		</div>
+	</FadeIn>
+</article>

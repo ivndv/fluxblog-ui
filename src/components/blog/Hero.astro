@@ -1,0 +1,68 @@
+---
+import * as m from '@/paraglide/messages';
+import { paths, type Locale } from '../../lib/routes';
+import FadeIn from '../ui/animations/FadeIn.astro';
+import IconArrowRight from '../ui/icons/IconArrowRight.astro';
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const opt = { locale };
+
+const siteName = 'FluxDev';
+---
+
+<section class="relative flex min-h-[calc(100svh-3.5rem)] items-center py-12 sm:py-16">
+	<div
+		aria-hidden="true"
+		class="pointer-events-none absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand/10 blur-3xl"
+	>
+	</div>
+
+	<div
+		class="relative mx-auto grid w-full max-w-5xl items-center gap-10 md:grid-cols-[minmax(0,1fr)_auto]"
+	>
+		<div class="text-left">
+			<FadeIn direction="up">
+				<h1
+					class="max-w-3xl text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] text-white"
+				>
+					{m.home_title_lead({}, opt)} <span class="text-brand">{m.home_title_accent({}, opt)}</span>
+				</h1>
+			</FadeIn>
+
+			<FadeIn direction="up" delay={40}>
+				<p class="mt-6 max-w-2xl text-base md:text-lg text-text-secondary leading-relaxed">
+					{m.home_description({}, opt)}
+				</p>
+			</FadeIn>
+
+			<FadeIn direction="up" delay={80}>
+				<div class="mt-9">
+					<a
+						href={paths.blog(locale)}
+						class="group inline-flex items-center gap-2 rounded-button bg-white px-5 py-3 text-sm font-semibold text-black transition-colors hover:bg-neutral-200"
+					>
+						{m.home_view_all_posts({}, opt)}
+						<IconArrowRight class="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+					</a>
+				</div>
+			</FadeIn>
+		</div>
+
+		<FadeIn direction="up" delay={120} class="hidden md:block">
+			<div class="relative mx-auto h-52 w-52">
+				<div class="absolute inset-0 rounded-full bg-brand/20 blur-3xl"></div>
+				<div class="relative flex h-52 w-52 items-center justify-center rounded-full border border-border-subtle bg-surface-raised">
+					<img
+						src="https://assets.mgdc.site/fluxblog/logo.png"
+						alt={siteName}
+						class="h-24 w-24 rounded-full object-cover"
+					/>
+				</div>
+			</div>
+		</FadeIn>
+	</div>
+</section>

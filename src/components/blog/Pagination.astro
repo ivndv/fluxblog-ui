@@ -1,0 +1,86 @@
+---
+import * as m from '@/paraglide/messages';
+import { getVisiblePages } from '../../lib/pagination';
+import { paths, type Locale } from '../../lib/routes';
+
+interface Props {
+	currentPage: number;
+	totalPages: number;
+	locale: Locale;
+}
+
+const { currentPage, totalPages, locale } = Astro.props;
+const opt = { locale };
+
+const hrefFor = (page: number) =>
+	page === 1 ? paths.blog(locale) : paths.blogPage(locale, page);
+
+const visiblePages = getVisiblePages(currentPage, totalPages);
+---
+
+{
+	totalPages > 1 && (
+		<nav
+			class="mt-10 flex items-center justify-between gap-3 border-t border-border-subtle pt-6"
+			aria-label="Pagination"
+		>
+			<div class="w-10 sm:w-28">
+				{currentPage > 1 ? (
+					<a
+						href={hrefFor(currentPage - 1)}
+						class="inline-flex min-h-11 items-center text-xs font-bold text-text-secondary hover:text-brand transition-colors"
+						aria-label={m.pagination_previous({}, opt)}
+					>
+						← <span class="hidden sm:inline ml-1">{m.pagination_previous({}, opt)}</span>
+					</a>
+				) : (
+					<span class="inline-flex min-h-11 items-center text-xs font-bold text-text-faint/50">
+						← <span class="hidden sm:inline ml-1">{m.pagination_previous({}, opt)}</span>
+					</span>
+				)}
+			</div>
+
+			<span class="text-xs font-semibold text-text-muted sm:hidden">
+				{currentPage} / {totalPages}
+			</span>
+
+			<div class="hidden sm:flex items-center gap-1">
+				{visiblePages.map((entry) =>
+					entry === 'ellipsis' ? (
+						<span class="px-2 text-xs text-text-faint">…</span>
+					) : entry === currentPage ? (
+						<span
+							aria-current="page"
+							class="inline-flex h-9 min-w-9 items-center justify-center rounded-button bg-surface-hover px-2 text-xs font-bold text-white"
+						>
+							{entry}
+						</span>
+					) : (
+						<a
+							href={hrefFor(entry)}
+							class="inline-flex h-9 min-w-9 items-center justify-center rounded-button px-2 text-xs font-semibold text-text-muted hover:bg-surface-raised hover:text-white transition-colors"
+						>
+							{entry}
+						</a>
+					),
+				)}
+			</div>
+
+			<div class="w-10 text-right sm:w-28">
+				{currentPage < totalPages ? (
+					<a
+						href={hrefFor(currentPage + 1)}
+						class="inline-flex min-h-11 items-center text-xs font-bold text-text-secondary hover:text-brand transition-colors"
+						aria-label={m.pagination_next({}, opt)}
+					>
+						<span class="hidden sm:inline mr-1">{m.pagination_next({}, opt)}</span> →
+					</a>
+				) : (
+					<span class="inline-flex min-h-11 items-center text-xs font-bold text-text-faint/50">
+						<span class="hidden sm:inline mr-1">{m.pagination_next({}, opt)}</span> →
+					</span>
+				)}
+			</div>
+		</nav>
+	)
+}

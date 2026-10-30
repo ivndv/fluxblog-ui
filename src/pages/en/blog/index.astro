@@ -1,0 +1,31 @@
+---
+import * as m from '@/paraglide/messages';
+import Layout from '../../../layouts/Layout.astro';
+import BlogIndexPage from '../../../components/pages/BlogIndexPage.astro';
+import { POSTS_PER_PAGE } from '../../../lib/pagination';
+import { getPosts } from '../../../lib/payload';
+import { getTags } from '../../../lib/tags';
+
+const locale = 'en' as const;
+const opt = { locale };
+
+const [{ docs: posts, totalPages }, tags] = await Promise.all([
+	getPosts({ locale, page: 1, limit: POSTS_PER_PAGE }),
+	getTags(locale),
+]);
+
+const title = m.blog_title({}, opt);
+const description = m.blog_description({}, opt);
+---
+
+<Layout title={title} description={description} lang={locale}>
+	<main class="max-w-3xl mx-auto px-6 py-8 md:py-14">
+		<BlogIndexPage
+			posts={posts}
+			locale={locale}
+			currentPage={1}
+			totalPages={totalPages}
+			tags={tags}
+		/>
+	</main>
+</Layout>

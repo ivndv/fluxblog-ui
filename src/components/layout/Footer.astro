@@ -1,90 +1,75 @@
 ---
 import * as m from '@/paraglide/messages';
-import { localizeHref } from '@/paraglide/runtime';
+import { paths, type Locale } from '../../lib/routes';
 import IconInstagram from '../ui/icons/IconInstagram.astro';
 import IconYoutube from '../ui/icons/IconYoutube.astro';
 import IconGithub from '../ui/icons/IconGithub.astro';
 
 const currentYear = new Date().getFullYear();
-const currentLocale = Astro.currentLocale === 'en' ? 'en' : 'es';
+const currentLocale: Locale = Astro.currentLocale === 'en' ? 'en' : 'es';
 const opt = { locale: currentLocale };
+
+const siteName = 'FluxDev';
+const socials = [
+	{ platform: 'instagram', url: 'https://instagram.com' },
+	{ platform: 'youtube', url: 'https://youtube.com' },
+	{ platform: 'github', url: 'https://github.com/ivangtx19' },
+];
 ---
 
-<footer class="border-t border-border-subtle mt-auto pt-16 pb-8">
-    <div class="max-w-6xl mx-auto px-8">
-        <!-- 4-column grid -->
-        <div
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16"
-        >
+<footer data-pagefind-ignore class="border-t border-border-subtle mt-auto pt-16 pb-8">
+    <div class="max-w-6xl mx-auto px-6 md:px-8">
+        <!-- 3-column grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
             <!-- Brand & Social -->
             <div class="flex flex-col gap-4">
-                <a href={localizeHref('/', opt)} class="flex items-center gap-2">
-                    <div
-                        class="w-6 h-6 rounded-full bg-white flex items-center justify-center"
-                    >
+                <a href={paths.home(currentLocale)} class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-full bg-white flex items-center justify-center">
                         <div class="w-1 h-1 bg-black rounded-full"></div>
                     </div>
-                    <span
-                        class="text-lg font-bold tracking-[0.15em] uppercase text-white"
-                    >
-                        FluxDev
+                    <span class="text-lg font-bold tracking-[0.15em] uppercase text-white">
+                        {siteName}
                     </span>
                 </a>
                 <p class="text-sm text-text-faint leading-relaxed max-w-xs">
-                    Un espacio para compartir conocimiento sobre desarrollo,
-                    tecnología y crecimiento personal.
+                    {m.footer_tagline({}, opt)}
                 </p>
                 <div class="flex gap-4 mt-2">
-                    <!-- Instagram -->
-                    <a
-                        href="https://instagram.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-text-muted hover:text-white transition-all hover:scale-110"
-                        aria-label="Instagram"
-                    >
-                        <IconInstagram class="h-5 w-5" />
-                    </a>
-                    <!-- YouTube -->
-                    <a
-                        href="https://youtube.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-text-muted hover:text-white transition-all hover:scale-110"
-                        aria-label="YouTube"
-                    >
-                        <IconYoutube class="h-5 w-5" />
-                    </a>
-                    <!-- GitHub -->
-                    <a
-                        href="https://github.com/ivangtx19"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-text-muted hover:text-white transition-all hover:scale-110"
-                        aria-label="GitHub"
-                    >
-                        <IconGithub class="h-5 w-5" />
-                    </a>
+                    {socials.map((social) => (
+                        <a
+                            href={social.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={social.platform}
+                            class="inline-flex h-11 w-11 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-surface-raised hover:text-white"
+                        >
+                            {social.platform === 'github' && <IconGithub class="h-5 w-5" />}
+                            {social.platform === 'instagram' && <IconInstagram class="h-5 w-5" />}
+                            {social.platform === 'youtube' && <IconYoutube class="h-5 w-5" />}
+                        </a>
+                    ))}
                 </div>
             </div>
 
             <!-- Navigation -->
             <div class="flex flex-col gap-4">
-                <h3
-                    class="font-bold text-white uppercase tracking-wider text-sm"
-                >
+                <h3 class="font-bold text-white uppercase tracking-wider text-sm">
                     {m.footer_navigation({}, opt)}
                 </h3>
                 <ul class="flex flex-col gap-3 text-sm text-text-muted">
                     <li>
-                        <a href={localizeHref('/', opt)} class="hover:text-white transition-colors"
-                            >{m.footer_home({}, opt)}</a
+                        <a href={paths.home(currentLocale)} class="hover:text-white transition-colors"
+                            >{m.nav_home({}, opt)}</a
                         >
                     </li>
                     <li>
-                        <a
-                            href={localizeHref('/about', opt)}
-                            class="hover:text-white transition-colors">{m.footer_about({}, opt)}</a
+                        <a href={paths.blog(currentLocale)} class="hover:text-white transition-colors"
+                            >{m.nav_posts({}, opt)}</a
+                        >
+                    </li>
+                    <li>
+                        <a href={paths.about(currentLocale)} class="hover:text-white transition-colors"
+                            >{m.nav_about({}, opt)}</a
                         >
                     </li>
                 </ul>
@@ -92,75 +77,35 @@ const opt = { locale: currentLocale };
 
             <!-- Legal -->
             <div class="flex flex-col gap-4">
-                <h3
-                    class="font-bold text-white uppercase tracking-wider text-sm"
-                >
+                <h3 class="font-bold text-white uppercase tracking-wider text-sm">
                     {m.footer_legal({}, opt)}
                 </h3>
                 <ul class="flex flex-col gap-3 text-sm text-text-muted">
                     <li>
                         <a
-                            href={localizeHref('/legal/terms', opt)}
+                            href={paths.legal(currentLocale, 'terms')}
                             class="hover:text-white transition-colors"
                             >{m.footer_terms({}, opt)}</a
                         >
                     </li>
                     <li>
                         <a
-                            href={localizeHref('/legal/privacy', opt)}
+                            href={paths.legal(currentLocale, 'privacy')}
                             class="hover:text-white transition-colors"
                             >{m.footer_privacy({}, opt)}</a
                         >
                     </li>
                 </ul>
             </div>
-
-            <!-- Subscribe -->
-            <div class="flex flex-col gap-4">
-                <h3
-                    class="font-bold text-white uppercase tracking-wider text-sm"
-                >
-                    {m.footer_subscribe({}, opt)}
-                </h3>
-                <form
-                    class="flex flex-col gap-3"
-                    onsubmit="event.preventDefault();"
-                >
-                    <input
-                        type="email"
-                        placeholder={m.footer_email_placeholder({}, opt)}
-                        class="px-4 py-2 rounded-md border border-border-subtle bg-transparent text-text-muted text-sm focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
-                    />
-                    <button
-                        type="submit"
-                        class="px-4 py-2 rounded-md bg-white text-black font-medium text-sm hover:bg-neutral-200 transition-colors"
-                    >
-                        {m.footer_subscribe_button({}, opt)}
-                    </button>
-                </form>
-            </div>
         </div>
 
         <!-- Bottom bar -->
-        <div
-            class="border-t border-border-subtle pt-8 flex flex-col items-center gap-4"
-        >
+        <div class="border-t border-border-subtle pt-8 flex flex-col items-center gap-4">
             <p class="text-sm font-medium text-text-muted">
                 {m.footer_developed_by({}, opt)} <span class="font-bold text-white">Sinx</span>
             </p>
-            <div class="flex flex-wrap justify-center gap-2">
-                {
-                    ["Astro", "Payload CMS", "Tailwind", "Cloudflare"].map(
-                        (tech) => (
-                            <span class="px-3 py-1 text-xs font-medium rounded-full border border-border-subtle text-text-muted transition-all hover:border-white hover:text-white">
-                                {tech}
-                            </span>
-                        ),
-                    )
-                }
-            </div>
             <p class="text-xs text-text-faint">
-                &copy; {currentYear} Fluxdev. {m.footer_all_rights_reserved({}, opt)}
+                © {currentYear} {siteName}. {m.footer_all_rights_reserved({}, opt)}
             </p>
         </div>
     </div>

@@ -1,0 +1,47 @@
+---
+import * as m from '@/paraglide/messages';
+import type { Locale } from '../../lib/routes';
+import FadeIn from '../ui/animations/FadeIn.astro';
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const opt = { locale };
+
+const bio = m
+	.about_bio({}, opt)
+	.split('\n\n')
+	.map((paragraph) => paragraph.trim())
+	.filter(Boolean);
+---
+
+<article class="max-w-3xl">
+	<FadeIn direction="up">
+		<h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white">
+			{m.about_title({}, opt)}
+		</h1>
+	</FadeIn>
+
+	<FadeIn direction="up" delay={40}>
+		<div class="mt-8 flex items-center gap-5 border-b border-border-subtle pb-8">
+			<img
+				src="https://assets.mgdc.site/fluxblog/logo.png"
+				alt={m.about_name({}, opt)}
+				class="h-20 w-20 rounded-full object-cover border border-white/10"
+			/>
+
+			<div>
+				<p class="text-lg font-semibold text-white">{m.about_name({}, opt)}</p>
+				<p class="text-sm text-text-muted">{m.about_role({}, opt)}</p>
+			</div>
+		</div>
+	</FadeIn>
+
+	<FadeIn direction="up" delay={80}>
+		<div class="mt-8 space-y-4 text-text-secondary leading-relaxed">
+			{bio.map((paragraph) => <p>{paragraph}</p>)}
+		</div>
+	</FadeIn>
+</article>

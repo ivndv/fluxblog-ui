@@ -1,6 +1,8 @@
 ---
+import * as m from '@/paraglide/messages';
 import Layout from "../../layouts/Layout.astro";
 import HomeContent from "../../components/blog/HomeContent.astro";
+import { paths, type Locale } from "../../lib/routes";
 
 export function getStaticPaths() {
 	return [
@@ -11,11 +13,30 @@ export function getStaticPaths() {
 
 const { locale } = Astro.params;
 const currentLocale: Locale = locale === "en" ? "en" : "es";
-const title = currentLocale === "en" ? "Thoughts on Software" : "Fluxdev";
+const title = m.nav_home({}, { locale: currentLocale });
+
+const siteUrl = Astro.site ?? new URL("https://fluxdev-nova.mgdc.site");
+const searchUrl = new URL(paths.search(currentLocale), siteUrl).toString();
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "WebSite",
+	name: "FluxDev",
+	url: new URL(paths.home(currentLocale), siteUrl).toString(),
+	inLanguage: currentLocale === "es" ? "es-MX" : "en-US",
+	potentialAction: {
+		"@type": "SearchAction",
+		target: {
+			"@type": "EntryPoint",
+			urlTemplate: `${searchUrl}?q={search_term_string}`,
+		},
+		"query-input": "required name=search_term_string",
+	},
+};
 ---
 
-<Layout title={title} lang={currentLocale}>
-	<main class="max-w-3xl mx-auto px-6 py-8 md:py-14">
+<Layout title={title} lang={currentLocale} jsonLd={jsonLd}>
+	<main class="px-6">
 		<HomeContent locale={currentLocale} />
 	</main>
 </Layout>
