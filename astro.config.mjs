@@ -25,7 +25,7 @@ export default defineConfig({
 				outdir: './src/paraglide',
 				emitTsDeclarations: true,
 				strategy: ['url', 'globalVariable', 'baseLocale'],
-				trailingSlash: 'always',
+				trailingSlash: 'never',
 				urlPatterns: [
 					{
 						pattern: '/:path(.*)?',

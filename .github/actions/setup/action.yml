@@ -8,11 +8,11 @@ inputs:
   bun-version:
     description: Versión de Bun a instalar
     required: false
-    default: "1.3.14"
+    default: "1.4.4"
   node-version:
     description: Versión de Node.js a configurar
     required: false
-    default: "24.19.0"
+    default: "24.22.1"
 
 runs:
   using: composite
