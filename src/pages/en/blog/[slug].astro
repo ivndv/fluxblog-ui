@@ -1,0 +1,27 @@
+---
+import BlogPostPage from '../../../components/pages/BlogPostPage.astro';
+import { getAllPosts } from '../../../lib/payload';
+
+export async function getStaticPaths() {
+	const [esPosts, enPosts] = await Promise.all([
+		getAllPosts('es'),
+		getAllPosts('en'),
+	]);
+
+	const esSlugById = new Map(
+		esPosts.map((post) => [String(post.id), post.slug]),
+	);
+
+	return enPosts.map((post) => ({
+		params: { slug: post.slug },
+		props: {
+			post,
+			alternateSlug: esSlugById.get(String(post.id)),
+		},
+	}));
+}
+
+const { post, alternateSlug } = Astro.props;
+---
+
+<BlogPostPage post={post} locale="en" alternateSlug={alternateSlug} />

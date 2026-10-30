@@ -3,12 +3,18 @@ import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
+import { translatePath } from "../lib/routes";
 
 interface Props {
 	title: string;
 	description?: string;
 	image?: string;
 	lang?: string;
+	type?: 'website' | 'article';
+	publishedTime?: string;
+	alternates?: Array<{ hreflang: string; href: string }>;
+	searchable?: boolean;
+	jsonLd?: Record<string, unknown>;
 }
 
 const {
@@ -16,10 +22,27 @@ const {
 	description = "Notas personales sobre arquitecturas, desarrollo web moderno y productos digitales.",
 	image = "https://assets.mgdc.site/fluxblog/og-default.png",
 	lang = "es",
+	type = "website",
+	publishedTime,
+	alternates: providedAlternates = [],
+	searchable = false,
+	jsonLd,
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const ogImageURL = image.startsWith("http") ? image : new URL(image, Astro.site).toString();
+const alternates =
+	providedAlternates.length > 0
+		? providedAlternates
+		: [
+				{ hreflang: "es", href: translatePath(Astro.url.pathname, "es") },
+				{ hreflang: "en", href: translatePath(Astro.url.pathname, "en") },
+			];
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+const ogImageURL = image.startsWith("http") ? image : new URL(image, Astro.site ?? Astro.url.origin).toString();
+const ogLocale = lang === "en" ? "en_US" : "es_MX";
+const rssHref = lang === "en" ? "/en/rss.xml" : "/rss.xml";
+const absoluteUrl = (href: string) =>
+	new URL(href, Astro.site ?? Astro.url.origin).toString();
 ---
 
 <!doctype html>
@@ -37,27 +60,50 @@ const ogImageURL = image.startsWith("http") ? image : new URL(image, Astro.site)
 		<link rel="canonical" href={canonicalURL.toString()} />
 
 		<!-- Open Graph -->
-		<meta property="og:type" content="website" />
+		<meta property="og:type" content={type} />
 		<meta property="og:url" content={canonicalURL.toString()} />
 		<meta property="og:title" content={`${title} | FluxDev`} />
 		<meta property="og:description" content={description} />
 		<meta property="og:image" content={ogImageURL.toString()} />
-		<meta property="og:locale" content="es_MX" />
+		<meta property="og:image:alt" content={title} />
+		<meta property="og:locale" content={ogLocale} />
 		<meta property="og:site_name" content="FluxDev Blog" />
+		{type === "article" && publishedTime && (
+			<meta property="article:published_time" content={publishedTime} />
+		)}
+
+		<!-- Language alternates -->
+		{alternates.map((alternate) => (
+			<link
+				rel="alternate"
+				hreflang={alternate.hreflang}
+				href={absoluteUrl(alternate.href)}
+			/>
+		))}
 
 		<!-- Twitter -->
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={`${title} | FluxDev`} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={ogImageURL.toString()} />
+		<meta name="twitter:image:alt" content={title} />
 
 		<!-- RSS -->
 		<link
 			rel="alternate"
 			type="application/rss+xml"
 			title="FluxDev Blog"
-			href="/rss.xml"
+			href={rssHref}
 		/>
+
+		<slot name="head" />
+
+		{jsonLd && (
+			<script
+				type="application/ld+json"
+				set:html={JSON.stringify(jsonLd).replace(/</g, "\\u003c")}
+			/>
+		)}
 
 		<!-- Anti-FOUC & View Transitions Theme Sync -->
 		<script is:inline>
@@ -100,7 +146,7 @@ const ogImageURL = image.startsWith("http") ? image : new URL(image, Astro.site)
 			data-website-id="6404a796-0d97-46b6-9f02-4a9239f1866e"
 		></script>
 	</head>
-	<body>
+	<body data-pagefind-ignore={searchable ? undefined : ""}>
 		<Header />
 		<slot />
 		<Footer />

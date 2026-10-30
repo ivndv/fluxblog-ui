@@ -1,0 +1,40 @@
+---
+import * as m from '@/paraglide/messages';
+import type { PayloadPost } from '../../lib/payload';
+import { formatDate } from '../../lib/post-utils';
+import { paths, type Locale } from '../../lib/routes';
+
+interface Props {
+	posts: PayloadPost[];
+	locale: Locale;
+}
+
+const { posts, locale } = Astro.props;
+const opt = { locale };
+---
+
+{
+	posts.length > 0 && (
+		<section class="mt-14 border-t border-border-subtle pt-8">
+			<h2 class="text-xs font-bold tracking-widest uppercase text-text-muted mb-4">
+				{m.post_related({}, opt)}
+			</h2>
+
+			<div class="grid gap-3 sm:grid-cols-3">
+				{posts.map((post) => (
+					<a
+						href={paths.post(locale, post.slug)}
+						class="group rounded-xl border border-border-subtle bg-surface-raised p-4 transition-colors hover:border-border-hover hover:bg-surface-hover"
+					>
+						<p class="text-sm font-semibold text-text-primary group-hover:text-brand transition-colors line-clamp-2">
+							{post.title}
+						</p>
+						<p class="mt-2 text-xs text-text-muted">
+							{formatDate(post.date || post.createdAt, locale)}
+						</p>
+					</a>
+				))}
+			</div>
+		</section>
+	)
+}

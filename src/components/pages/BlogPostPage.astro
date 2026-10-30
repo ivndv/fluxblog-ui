@@ -1,0 +1,86 @@
+---
+import * as m from '@/paraglide/messages';
+import Layout from '../../layouts/Layout.astro';
+import PostContent from '../blog/PostContent.astro';
+import PostNavigation from '../blog/PostNavigation.astro';
+import RelatedPosts from '../blog/RelatedPosts.astro';
+import { getAllPosts, getMediaUrl, type PayloadPost } from '../../lib/payload';
+import { getExcerpt } from '../../lib/post-utils';
+import { getAdjacentPosts, rankRelatedPosts } from '../../lib/related';
+import { paths, type Locale } from '../../lib/routes';
+
+interface Props {
+	post: PayloadPost;
+	locale: Locale;
+	alternateSlug?: string;
+}
+
+const { post, locale, alternateSlug } = Astro.props;
+
+const description = getExcerpt(post, 160);
+const coverUrl = getMediaUrl(post.featuredImage);
+
+const allPosts = await getAllPosts(locale);
+const related = rankRelatedPosts(allPosts, post);
+const { previous, next } = getAdjacentPosts(allPosts, post);
+
+const otherLocale: Locale = locale === 'es' ? 'en' : 'es';
+const alternates = [
+	{ hreflang: locale, href: paths.post(locale, post.slug) },
+	...(alternateSlug
+		? [{ hreflang: otherLocale, href: paths.post(otherLocale, alternateSlug) }]
+		: []),
+];
+
+const siteUrl = Astro.site ?? new URL('https://fluxdev-nova.mgdc.site');
+const postUrl = new URL(paths.post(locale, post.slug), siteUrl).toString();
+const aboutUrl = new URL(paths.about(locale), siteUrl).toString();
+const authorName = m.about_name({}, { locale });
+
+const jsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'BlogPosting',
+	headline: post.title,
+	description,
+	datePublished: new Date(post.date || post.createdAt).toISOString(),
+	dateModified: new Date(post.updatedAt).toISOString(),
+	author: {
+		'@type': 'Person',
+		name: authorName,
+		url: aboutUrl,
+	},
+	image: coverUrl ?? 'https://assets.mgdc.site/fluxblog/og-default.png',
+	url: postUrl,
+	mainEntityOfPage: {
+		'@type': 'WebPage',
+		'@id': postUrl,
+	},
+	inLanguage: locale === 'es' ? 'es-MX' : 'en-US',
+	publisher: {
+		'@type': 'Organization',
+		name: 'FluxDev',
+		logo: {
+			'@type': 'ImageObject',
+			url: 'https://assets.mgdc.site/fluxblog/logo.png',
+		},
+	},
+};
+---
+
+<Layout
+	title={post.title}
+	description={description}
+	image={coverUrl}
+	lang={locale}
+	type="article"
+	publishedTime={post.date || post.createdAt}
+	alternates={alternates}
+	searchable
+	jsonLd={jsonLd}
+>
+	<main class="max-w-3xl mx-auto px-6 py-8 md:py-14">
+		<PostContent post={post} locale={locale} />
+		<RelatedPosts posts={related} locale={locale} />
+		<PostNavigation previous={previous} next={next} locale={locale} />
+	</main>
+</Layout>

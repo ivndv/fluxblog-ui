@@ -1,0 +1,48 @@
+---
+import * as m from '@/paraglide/messages';
+import type { PayloadPost } from '../../lib/payload';
+import { paths, type Locale } from '../../lib/routes';
+
+interface Props {
+	previous: PayloadPost | null;
+	next: PayloadPost | null;
+	locale: Locale;
+}
+
+const { previous, next, locale } = Astro.props;
+const opt = { locale };
+---
+
+{
+	(previous || next) && (
+		<nav class="mt-12 grid gap-3 sm:grid-cols-2" aria-label="Post navigation">
+			{previous && (
+				<a
+					href={paths.post(locale, previous.slug)}
+					class="group rounded-xl border border-border-subtle bg-surface-raised p-4 transition-colors hover:border-border-hover hover:bg-surface-hover"
+				>
+					<span class="text-[10px] font-bold tracking-[0.2em] uppercase text-text-muted">
+						← {m.post_previous({}, opt)}
+					</span>
+					<p class="mt-2 text-sm font-semibold text-text-primary group-hover:text-brand transition-colors line-clamp-2">
+						{previous.title}
+					</p>
+				</a>
+			)}
+
+			{next && (
+				<a
+					href={paths.post(locale, next.slug)}
+					class="group rounded-xl border border-border-subtle bg-surface-raised p-4 text-left transition-colors hover:border-border-hover hover:bg-surface-hover sm:text-right"
+				>
+					<span class="text-[10px] font-bold tracking-[0.2em] uppercase text-text-muted">
+						{m.post_next({}, opt)} →
+					</span>
+					<p class="mt-2 text-sm font-semibold text-text-primary group-hover:text-brand transition-colors line-clamp-2">
+						{next.title}
+					</p>
+				</a>
+			)}
+		</nav>
+	)
+}

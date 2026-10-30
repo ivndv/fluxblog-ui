@@ -1,0 +1,36 @@
+---
+import * as m from '@/paraglide/messages';
+import { paths, type Locale } from '../../lib/routes';
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const opt = { locale };
+
+const name = m.about_name({}, opt);
+const initials = name
+	.split(' ')
+	.map((part) => part[0])
+	.join('')
+	.slice(0, 2)
+	.toUpperCase();
+---
+
+<div class="mt-14 flex items-start gap-4 rounded-2xl border border-border-subtle bg-surface-raised p-6">
+	<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/10 bg-surface-hover text-sm font-bold text-white">
+		{initials}
+	</div>
+
+	<div>
+		<p class="text-sm font-semibold text-white">{name}</p>
+		<p class="text-xs text-text-muted">{m.about_role({}, opt)}</p>
+		<a
+			href={paths.about(locale)}
+			class="mt-2 inline-block text-xs font-bold text-brand hover:text-brand-hover transition-colors"
+		>
+			{m.post_about_link({}, opt)}
+		</a>
+	</div>
+</div>

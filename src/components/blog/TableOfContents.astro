@@ -1,0 +1,38 @@
+---
+import * as m from '@/paraglide/messages';
+import type { Heading } from '../../lib/post-utils';
+import type { Locale } from '../../lib/routes';
+
+interface Props {
+	headings: Heading[];
+	locale: Locale;
+}
+
+const { headings, locale } = Astro.props;
+const opt = { locale };
+---
+
+{
+	headings.length >= 2 && (
+		<nav
+			class="mb-10 rounded-2xl border border-border-subtle bg-surface-raised p-5"
+			aria-label={m.post_toc({}, opt)}
+		>
+			<p class="text-[10px] font-bold tracking-[0.2em] uppercase text-text-muted mb-3">
+				{m.post_toc({}, opt)}
+			</p>
+			<ol class="space-y-2 text-sm">
+				{headings.map((heading) => (
+					<li class={heading.level === 3 ? 'pl-4' : ''}>
+						<a
+							href={`#${heading.id}`}
+							class="text-text-secondary hover:text-brand transition-colors"
+						>
+							{heading.text}
+						</a>
+					</li>
+				))}
+			</ol>
+		</nav>
+	)
+}

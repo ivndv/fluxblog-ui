@@ -1,5 +1,6 @@
 ---
 import type { LexicalNode } from "../../lib/payload";
+import { slugifyHeading } from "../../lib/post-utils";
 
 interface Props {
 	nodes: LexicalNode[];
@@ -34,7 +35,7 @@ const { nodes } = Astro.props;
 				if (format & 1) content = `<strong>${content}</strong>`;
 				if (format & 2) content = `<em>${content}</em>`;
 
-				const id = textContent.toLowerCase().replace(/\s+/g, '-');
+				const id = slugifyHeading(textContent);
 
 				if (node.tag === 'h2') {
 					return <h2 id={id} set:html={content} />;

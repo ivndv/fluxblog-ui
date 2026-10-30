@@ -1,24 +1,24 @@
 import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';
-import { getPosts } from '../lib/payload';
+import { getPosts, type PayloadPost } from '../lib/payload';
+import { getExcerpt } from '../lib/post-utils';
+import { paths } from '../lib/routes';
 
 export async function GET(context: APIContext) {
-	const posts = await getPosts();
+	const { docs: posts } = await getPosts({ limit: 100 });
+	const site = context.site ?? new URL('https://fluxdev-nova.mgdc.site');
 
 	return rss({
 		title: 'FluxDev Blog',
 		description:
 			'Notas personales sobre arquitecturas, desarrollo web moderno y productos digitales.',
-		site: context.site!.toString(),
-		items: posts.map((post) => ({
+		site: site.toString(),
+		items: posts.map((post: PayloadPost) => ({
 			title: post.title,
 			pubDate: new Date(post.date || post.createdAt),
-			description:
-				post.excerpt ||
-				post.content?.root?.children?.[0]?.children?.[0]?.text?.substring(0, 160) ||
-				'',
-			link: `/blog/${post.slug}`,
-			categories: post.tag ? [post.tag] : [],
+			description: getExcerpt(post),
+			link: paths.post('es', post.slug),
+			categories: post.tags?.map((tag) => tag.value) ?? [],
 		})),
 		customData: '<language>es-mx</language>',
 	});

@@ -1,0 +1,71 @@
+---
+import * as m from '@/paraglide/messages';
+import type { Locale } from '../../lib/routes';
+
+interface Props {
+	url: string;
+	title: string;
+	locale: Locale;
+}
+
+const { url, title, locale } = Astro.props;
+const opt = { locale };
+
+const encodedUrl = encodeURIComponent(url);
+const encodedTitle = encodeURIComponent(title);
+
+const xUrl = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
+const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+---
+
+<div class="flex flex-wrap items-center gap-2">
+	<span class="text-[10px] font-bold tracking-[0.2em] uppercase text-text-muted mr-1">
+		{m.post_share({}, opt)}
+	</span>
+
+	<a
+		href={xUrl}
+		target="_blank"
+		rel="noopener noreferrer"
+		class="rounded-full border border-border-subtle px-3 py-1 text-xs font-semibold text-text-muted transition-colors hover:border-brand hover:text-brand"
+	>
+		X
+	</a>
+
+	<a
+		href={linkedInUrl}
+		target="_blank"
+		rel="noopener noreferrer"
+		class="rounded-full border border-border-subtle px-3 py-1 text-xs font-semibold text-text-muted transition-colors hover:border-brand hover:text-brand"
+	>
+		LinkedIn
+	</a>
+
+	<button
+		type="button"
+		data-copy-link
+		data-default-label={m.post_copy_link({}, opt)}
+		data-copied-label={m.post_link_copied({}, opt)}
+		class="rounded-full border border-border-subtle px-3 py-1 text-xs font-semibold text-text-muted transition-colors hover:border-brand hover:text-brand"
+	>
+		{m.post_copy_link({}, opt)}
+	</button>
+</div>
+
+<script>
+	document.addEventListener('click', async (event) => {
+		const target = event.target as HTMLElement | null;
+		const button = target?.closest('[data-copy-link]') as HTMLButtonElement | null;
+		if (!button) return;
+
+		try {
+			await navigator.clipboard.writeText(window.location.href);
+			button.textContent = button.dataset.copiedLabel ?? button.textContent;
+			setTimeout(() => {
+				button.textContent = button.dataset.defaultLabel ?? button.textContent;
+			}, 2000);
+		} catch {
+			// Clipboard unavailable (insecure context): keep the label as is.
+		}
+	});
+</script>
