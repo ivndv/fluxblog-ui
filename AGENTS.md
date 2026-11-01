@@ -11,7 +11,7 @@ Guía operativa y técnica para agentes de Inteligencia Artificial que colaboren
 * **Propósito:** Brindar una experiencia de lectura moderna con soporte nativo multilingüe (Español `/` e Inglés `/en/`), renderizado nativo de nodos ricos de Lexical, selector de temas y preferencias con Zustand, generación automática de feeds RSS y Sitemap.
 * **Dominio en Producción:** [https://fluxdev-nova.mgdc.site/](https://fluxdev-nova.mgdc.site/)
 * **Backend / Headless CMS:** [https://fluxblog-api.fluxdv.icu/](https://fluxblog-api.fluxdv.icu/)
-* **Repositorio:** [https://github.com/Ivandv19/blog-personal-fluxdev-frontend.git](https://github.com/Ivandv19/blog-personal-fluxdev-frontend.git)
+* **Repositorio:** [https://github.com/ivndv/fluxblog-ui](https://github.com/ivndv/fluxblog-ui)
 
 ---
 

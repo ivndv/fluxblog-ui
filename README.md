@@ -25,33 +25,12 @@ Esta es la interfaz pública del Blog FluxDev, donde los usuarios pueden interac
 
 ## Tecnologías Utilizadas
 
-- HTML / CSS / JavaScript
-- Astro
-- React
-- Tailwind CSS
-- pnpm
+- HTML / CSS / TypeScript
+- Astro 7
+- React 19
+- Tailwind CSS 4
+- Bun
 
-## Instalación
-
-1. **Clonar el Repositorio**: Descarga el código de este proyecto en tu máquina usando Git.
-
-```bash
-git clone https://github.com/Ivandv19/blog-personal-fluxdev-frontend.git
-```
-
-2. **Instalar Dependencias**: Abre una terminal en la carpeta del proyecto y ejecuta:
-
-```bash
-pnpm install
-```
-
-3. **Variables de Entorno**: Crea un archivo `.env` en la raíz del proyecto. Agrega la variable `PAYLOAD_URL` indicando el enlace donde está funcionando tu panel de administración.
-
-4. **Iniciar el Proyecto**: Ejecuta el servidor localmente con:
-
-```bash
-pnpm run dev
-```
 
 ## Créditos
 
@@ -61,12 +40,8 @@ Este es el proyecto encargado de mostrar públicamente el contenido del portafol
 
 ## Despliegue
 
-El sitio web está desplegado en Cloudflare Pages y se distribuye automáticamente cada vez que se agrega un nuevo artículo. Puedes visitarlo aquí: [fluxdev-nova.mgdc.site](https://fluxdev-nova.mgdc.site/).
+El sitio web está desplegado en Cloudflare Pages y se distribuye automáticamente cada vez que se agrega un nuevo artículo. Puedes visitarlo aquí: [Fluxdev](https://fluxdev-nova.mgdc.site/).
 
 ## Licencia
 
-Licencia de Uso Personal:
-
-Este software es propiedad de **Ivan Cruz**. Se permite el uso de este software solo para fines personales y no comerciales. No se permite la distribución, modificación ni uso comercial de este software sin el consentimiento expreso de **Ivan Cruz**.
-
-Cualquier uso no autorizado puede resultar en acciones legales.
+[MIT](LICENSE) © 2026 Ivan Cruz
