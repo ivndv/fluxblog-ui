@@ -150,5 +150,13 @@ const absoluteUrl = (href: string) =>
 		<Header />
 		<slot />
 		<Footer />
+		<!-- Cloudflare Web Analytics -->
+		<script
+			is:inline
+			defer
+			src="https://static.cloudflareinsights.com/beacon.min.js"
+			data-cf-beacon='{"token":"591849978fe34335acb7fb722ff840ef"}'
+		></script>
+		<!-- End Cloudflare Web Analytics -->
 	</body>
 </html>
