@@ -8,7 +8,7 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://fluxdev-nova.mgdc.site/',
+	site: 'https://fluxblog.liuma.app/',
 	i18n: {
 		defaultLocale: 'es',
 		locales: ['es', 'en'],

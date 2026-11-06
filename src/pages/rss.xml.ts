@@ -6,7 +6,7 @@ import { paths } from '../lib/routes';
 
 export async function GET(context: APIContext) {
 	const { docs: posts } = await getPosts({ limit: 100 });
-	const site = context.site ?? new URL('https://fluxdev-nova.mgdc.site');
+	const site = context.site ?? new URL('https://fluxblog.liuma.app');
 
 	return rss({
 		title: 'FluxDev Blog',

@@ -1,7 +1,7 @@
 # FluxDev Blog — robots.txt
-# https://fluxdev-nova.mgdc.site
+# https://fluxblog.liuma.app
 
 User-agent: *
 Allow: /
 
-Sitemap: https://fluxdev-nova.mgdc.site/sitemap-index.xml
+Sitemap: https://fluxblog.liuma.app/sitemap-index.xml

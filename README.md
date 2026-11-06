@@ -19,7 +19,7 @@ Esta es la interfaz pública del Blog FluxDev, donde los usuarios pueden interac
 
 ## Uso
 
-- **Visualizar Contenido**: El proyecto ya se encuentra en funcionamiento. Puedes explorarlo aquí: [FluxDev Blog](https://fluxdev-nova.mgdc.site/).
+- **Visualizar Contenido**: El proyecto ya se encuentra en funcionamiento. Puedes explorarlo aquí: [FluxDev Blog](https://fluxblog.liuma.app/).
 - **Personalizar Pantalla**: Usa el ícono superior para ajustar el modo oscuro o cambiar el idioma.
 - **Lectura Fluida**: Navega entre publicaciones con transiciones rápidas y sin recargas de página completas.
 
@@ -40,7 +40,7 @@ Este es el proyecto encargado de mostrar públicamente el contenido del portafol
 
 ## Despliegue
 
-El sitio web está desplegado en Cloudflare Pages y se distribuye automáticamente cada vez que se agrega un nuevo artículo. Puedes visitarlo aquí: [Fluxdev](https://fluxdev-nova.mgdc.site/).
+El sitio web está desplegado en Cloudflare Pages y se distribuye automáticamente cada vez que se agrega un nuevo artículo. Puedes visitarlo aquí: [Fluxdev](https://fluxblog.liuma.app/).
 
 ## Licencia
 

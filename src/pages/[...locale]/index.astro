@@ -15,7 +15,7 @@ const { locale } = Astro.params;
 const currentLocale: Locale = locale === "en" ? "en" : "es";
 const title = m.nav_home({}, { locale: currentLocale });
 
-const siteUrl = Astro.site ?? new URL("https://fluxdev-nova.mgdc.site");
+const siteUrl = Astro.site ?? new URL("https://fluxblog.liuma.app");
 const searchUrl = new URL(paths.search(currentLocale), siteUrl).toString();
 
 const jsonLd = {

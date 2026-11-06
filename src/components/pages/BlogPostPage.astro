@@ -32,7 +32,7 @@ const alternates = [
 		: []),
 ];
 
-const siteUrl = Astro.site ?? new URL('https://fluxdev-nova.mgdc.site');
+const siteUrl = Astro.site ?? new URL('https://fluxblog.liuma.app');
 const postUrl = new URL(paths.post(locale, post.slug), siteUrl).toString();
 const aboutUrl = new URL(paths.about(locale), siteUrl).toString();
 const authorName = m.about_name({}, { locale });
@@ -49,7 +49,7 @@ const jsonLd = {
 		name: authorName,
 		url: aboutUrl,
 	},
-	image: coverUrl ?? 'https://assets.mgdc.site/fluxblog/og-default.png',
+	image: coverUrl ?? 'https://assets.liuma.app/fluxblog/og-default.png',
 	url: postUrl,
 	mainEntityOfPage: {
 		'@type': 'WebPage',
@@ -61,7 +61,7 @@ const jsonLd = {
 		name: 'FluxDev',
 		logo: {
 			'@type': 'ImageObject',
-			url: 'https://assets.mgdc.site/fluxblog/logo.png',
+			url: 'https://assets.liuma.app/fluxblog/logo.png',
 		},
 	},
 };

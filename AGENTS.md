@@ -7,8 +7,8 @@ Guía operativa y técnica para agentes de IA que colaboren en el desarrollo, ma
 **FluxBlog UI** es el frontend web estático de alto rendimiento (SSG, Static Site Generation) diseñado para la publicación y lectura del blog técnico de FluxDev. Consume de forma desacoplada la API de Payload CMS (**`fluxblog-api`**) durante el ciclo de compilación para generar páginas estáticas ultrarrápidas, accesibles y optimizadas para SEO.
 
 - **Propósito:** brindar una experiencia de lectura moderna con soporte nativo multilingüe (español `/` e inglés `/en/`), renderizado nativo de nodos ricos de Lexical, selector de temas y preferencias con Zustand, y generación automática de feeds RSS y Sitemap.
-- **Dominio en producción:** [https://fluxdev-nova.mgdc.site/](https://fluxdev-nova.mgdc.site/)
-- **Backend / Headless CMS:** [https://fluxblog-api.fluxdv.icu/](https://fluxblog-api.fluxdv.icu/)
+- **Dominio en producción:** [https://fluxblog.liuma.app/](https://fluxblog.liuma.app/)
+- **Backend / Headless CMS:** [https://fluxblog-api.liuma.app/](https://fluxblog-api.liuma.app/)
 - **Repositorio:** [https://github.com/ivndv/fluxblog-ui](https://github.com/ivndv/fluxblog-ui)
 
 ## 2. Antes de tocar código

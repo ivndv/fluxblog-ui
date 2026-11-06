@@ -4,8 +4,8 @@
 
 ## Secciones
 
-- [Inicio](https://fluxdev-nova.mgdc.site/)
-- [RSS Feed](https://fluxdev-nova.mgdc.site/rss.xml)
+- [Inicio](https://fluxblog.liuma.app/)
+- [RSS Feed](https://fluxblog.liuma.app/rss.xml)
 
 ## Detalles Técnicos
 
@@ -22,8 +22,8 @@
 
 ## Sections
 
-- [Home](https://fluxdev-nova.mgdc.site/en)
-- [RSS Feed](https://fluxdev-nova.mgdc.site/rss.xml)
+- [Home](https://fluxblog.liuma.app/en)
+- [RSS Feed](https://fluxblog.liuma.app/rss.xml)
 
 ## Technical Details
 
