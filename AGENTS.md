@@ -1,54 +1,42 @@
-# AGENTS.md — Guía para Agentes en FluxBlog UI
+# AGENTS.md — FluxBlog UI
 
-Guía operativa y técnica para agentes de Inteligencia Artificial que colaboren en el desarrollo, mantenimiento, testing y optimización de la interfaz web **FluxBlog UI**.
+Guía operativa y técnica para agentes de IA que colaboren en el desarrollo, mantenimiento, testing y optimización de la interfaz web **FluxBlog UI**.
 
----
+## 1. Visión general
 
-## 1. Visión General del Proyecto
+**FluxBlog UI** es el frontend web estático de alto rendimiento (SSG, Static Site Generation) diseñado para la publicación y lectura del blog técnico de FluxDev. Consume de forma desacoplada la API de Payload CMS (**`fluxblog-api`**) durante el ciclo de compilación para generar páginas estáticas ultrarrápidas, accesibles y optimizadas para SEO.
 
-**FluxBlog UI** es el frontend web estático de alto rendimiento (SSG - Static Site Generation) diseñado para la publicación y lectura del blog técnico de FluxDev. Consume de forma desacoplada la API de Payload CMS (**`fluxblog-api`**) durante el ciclo de compilación para generar páginas estáticas ultrarrápidas, accesibles y optimizadas para SEO.
+- **Propósito:** brindar una experiencia de lectura moderna con soporte nativo multilingüe (español `/` e inglés `/en/`), renderizado nativo de nodos ricos de Lexical, selector de temas y preferencias con Zustand, y generación automática de feeds RSS y Sitemap.
+- **Dominio en producción:** [https://fluxdev-nova.mgdc.site/](https://fluxdev-nova.mgdc.site/)
+- **Backend / Headless CMS:** [https://fluxblog-api.fluxdv.icu/](https://fluxblog-api.fluxdv.icu/)
+- **Repositorio:** [https://github.com/ivndv/fluxblog-ui](https://github.com/ivndv/fluxblog-ui)
 
-* **Propósito:** Brindar una experiencia de lectura moderna con soporte nativo multilingüe (Español `/` e Inglés `/en/`), renderizado nativo de nodos ricos de Lexical, selector de temas y preferencias con Zustand, generación automática de feeds RSS y Sitemap.
-* **Dominio en Producción:** [https://fluxdev-nova.mgdc.site/](https://fluxdev-nova.mgdc.site/)
-* **Backend / Headless CMS:** [https://fluxblog-api.fluxdv.icu/](https://fluxblog-api.fluxdv.icu/)
-* **Repositorio:** [https://github.com/ivndv/fluxblog-ui](https://github.com/ivndv/fluxblog-ui)
+## 2. Antes de tocar código
 
----
+**CodeGraph** (índice de símbolos del repo): usa `codegraph_explore` (`query`, `maxFiles`, `projectPath`) antes de un grep masivo o de leer varios archivos; devuelve fuente verbatim, rutas de llamada e impacto.
 
-## 2. Antes de Tocar Código (Contexto con CodeGraph)
+- `codegraph sync /home/ivan/software-dev/fluxblog-ui` tras editar, pull o cambiar de rama (incremental, uso normal).
+- `codegraph index /home/ivan/software-dev/fluxblog-ui` solo al crear el índice, tras `codegraph upgrade` o si `status` avisa `built by vX` (rebuild completo).
+- `codegraph status /home/ivan/software-dev/fluxblog-ui` para comprobar el estado.
 
-* **Uso del MCP CodeGraph:** Antes de realizar búsquedas masivas de texto o explorar múltiples archivos a ciegas, invoca la herramienta `codegraph_explore` para inspeccionar el flujo de llamadas, blast radius y el código fuente verbatim de los símbolos en una sola llamada eficiente.
-* **Estado y Sincronización:**
-  ```bash
-  # Verificar el estado del índice de CodeGraph
-  codegraph status /home/ivan/software-dev/fluxblog-ui
-
-  # Sincronizar cambios en el árbol de archivos tras crear o renombrar módulos
-  codegraph sync /home/ivan/software-dev/fluxblog-ui
-  ```
-
----
-
-## 3. Stack Tecnológico
+## 3. Stack tecnológico
 
 | Capa | Tecnología | Versión / Detalle |
 | :--- | :--- | :--- |
-| **Runtime & Gestor** | **Bun / Node** | `Bun v1.4.x` (`bun.lock`), `Node >=22.23.4` |
-| **Framework Web & SSG** | **Astro 7** | `astro ^7.4.4` (Arquitectura en Islas, rutas estáticas) |
+| **Runtime y gestor** | **Bun / Node** | `Bun v1.4.x` (`bun.lock`), `Node >=22.23.4` |
+| **Framework web y SSG** | **Astro 7** | `astro ^7.4.4` (arquitectura en islas, rutas estáticas) |
 | **Integraciones de Astro** | **@astrojs/react, sitemap, rss** | `@astrojs/react ^7.1.2`, `@astrojs/sitemap ^3.7.4`, `@astrojs/rss ^4.0.19` |
-| **Librería de Componentes** | **React 19** | `react 19.3.1`, `react-dom 19.3.1`, `@types/react 19.3.0` |
-| **Estilos & Tipografía** | **Tailwind CSS 4** | `tailwindcss ^4.3.3`, `@tailwindcss/vite ^4.3.3`, `@tailwindcss/typography ^0.5.20` |
-| **Estado Global del Cliente** | **Zustand 5** | `zustand ^5.0.16` (Slices modulares en `src/store/slices/preferencesSlice.ts`) |
-| **Renderizado de Contenido** | **Lexical AST + Marked** | Componente nativo `LexicalRenderer.astro` y `marked ^18.1.2` |
-| **Validación de Esquemas** | **Zod 4** | `zod ^4.6.7` (`src/lib/schemas.ts`) |
+| **Librería de componentes** | **React 19** | `react 19.3.1`, `react-dom 19.3.1`, `@types/react 19.3.0` |
+| **Estilos y tipografía** | **Tailwind CSS 4** | `tailwindcss ^4.3.3`, `@tailwindcss/vite ^4.3.3`, `@tailwindcss/typography ^0.5.20` |
+| **Estado global del cliente** | **Zustand 5** | `zustand ^5.0.16` (slices modulares en `src/store/slices/preferencesSlice.ts`) |
+| **Renderizado de contenido** | **Lexical AST + Marked** | Componente nativo `LexicalRenderer.astro` y `marked ^18.1.2` |
+| **Validación de esquemas** | **Zod 4** | `zod ^4.6.7` (`src/lib/schemas.ts`) |
 | **Internacionalización (i18n)** | **Paraglide + Astro i18n** | Rutas localizadas: ES `/articulos`, `/etiquetas`, `/acerca`, `/buscar`; EN `/en/blog`, `/en/tags`, `/en/about`, `/en/search`. Mapa central en `src/lib/routes.ts` |
-| **Linter & Formatter** | **Biome 2** | `@biomejs/biome ^2.6.4` (`biome.json` con preset recomendado) |
-| **Testing Automatizado** | **Vitest 5** | `vitest ^5.0.5`, `@vitejs/plugin-react ^6.1.2`, `@testing-library/react ^16.3.3`, `jsdom` |
-| **Infraestructura Edge** | **Cloudflare Pages** | Despliegue estático global con Pages Functions en `functions/` (`wrangler.toml`) |
+| **Linter y formatter** | **Biome 2** | `@biomejs/biome ^2.6.4` (`biome.json` con preset recomendado) |
+| **Testing automatizado** | **Vitest 5** | `vitest ^5.0.5`, `@vitejs/plugin-react ^6.1.2`, `@testing-library/react ^16.3.3`, `jsdom` |
+| **Infraestructura edge** | **Cloudflare Pages** | Despliegue estático global con Pages Functions en `functions/` |
 
----
-
-## 4. Estructura del Código
+## 4. Estructura del código
 
 ```
 fluxblog-ui/
@@ -139,11 +127,23 @@ fluxblog-ui/
 └── wrangler.json                  → Configuración de Cloudflare Pages
 ```
 
----
+## 5. Arquitectura y flujo de datos
 
-## 5. Comandos Útiles (Bun)
+- **Generación estática:** durante `bun run build`, `src/lib/payload.ts` consulta la API de Payload y `src/lib/schemas.ts` valida las respuestas con Zod; el resultado son páginas estáticas por ruta ES/EN.
+- **Búsqueda:** Pagefind indexa el HTML generado al final del build y la búsqueda se resuelve en el cliente (`SearchDialog.tsx`, `SearchPage.astro`).
+- **Estado del cliente:** mínimo y persistido con Zustand, limitado a las preferencias de tema e idioma.
+- **Edge:** Cloudflare Pages sirve `functions/api/[[route]].ts`, un router modular con `/api/health` y `/api/posts` que delega en `functions/_controllers/`.
 
-### 🚀 Desarrollo y Compilación
+## 6. Variables de entorno
+
+Se define en un archivo `.env` o durante el build. Nunca documentar valores reales de secretos.
+
+| Variable | Descripción |
+| :--- | :--- |
+| `PAYLOAD_URL` | URL base de la API de Payload CMS. En local apunta al backend en el puerto 3050; en producción al dominio de la API. |
+
+## 7. Comandos
+
 ```bash
 # Iniciar servidor local de desarrollo de Astro
 bun run dev
@@ -151,16 +151,12 @@ bun run dev
 # Compilar y probar localmente con emulador de Cloudflare Pages (puerto 4321)
 bun run dev:full
 
-# Compilar sitio estático para producción (directorio dist/)
-# Incluye Pagefind: genera índices de búsqueda ES y EN
+# Compilar sitio estático para producción (dist/) e incluir Pagefind con índices ES y EN
 bun run build
 
 # Previsualizar el build estático localmente
 bun run preview
-```
 
-### 🧪 Testing y Calidad de Código
-```bash
 # Ejecutar todas las pruebas unitarias con Vitest
 bun run test
 
@@ -177,24 +173,16 @@ bun run format
 bun run lint
 ```
 
----
+## 8. Convenciones y reglas críticas
 
-## 6. Variables de Entorno
+1. **Commit y push:** prohibido ejecutar `git commit` o `git push` sin autorización explícita del usuario.
+2. **No hidratar componentes innecesariamente:** priorizar siempre componentes nativos `.astro` sin JavaScript en el cliente. Usar React (`client:load`, `client:idle`) única y exclusivamente para elementos verdaderamente interactivos (ej: `SettingsMenu.tsx`).
+3. **No romper el renderizado de Lexical:** cualquier adición o cambio en los tipos de contenido de Payload debe reflejarse en `src/components/LexicalRenderer.astro`.
+4. **No degradar el pipeline de calidad:** ejecutar siempre `bun run test && bun run check && bun run build` antes de dar por terminada cualquier tarea.
 
-Crea un archivo `.env` o define la variable durante el build:
+## 9. Flujo de Git y despliegue
 
-```env
-# URL de la API de Payload CMS (Backend)
-# Local: http://localhost:3000/api (o http://localhost:3050/api)
-# Producción: https://fluxblog-api.fluxdv.icu/api
-PAYLOAD_URL=http://localhost:3000/api
-```
-
----
-
-## 7. Qué NO Hacer (Reglas Estrictas para Agentes)
-
-1. **NO hacer commit ni push sin autorización explícita:** Nunca ejecutes `git commit` ni `git push` a menos que el usuario lo solicite expresamente.
-2. **NO hidratar componentes innecesariamente:** Prioriza siempre componentes nativos `.astro` sin JavaScript en el cliente. Usa React (`client:load`, `client:idle`) única y exclusivamente para elementos verdaderamente interactivos (ej: `SettingsMenu.tsx`).
-3. **NO romper el renderizado de Lexical:** Cualquier adición o cambio en los tipos de contenido de Payload debe reflejarse en `src/components/LexicalRenderer.astro`.
-4. **NO degradar el pipeline de calidad:** Ejecuta siempre `bun run test && bun run check && bun run build` antes de dar por terminada cualquier tarea.
+- **Prohibido:** hacer `git commit` o `git push` sin la aprobación explícita del usuario.
+- **Ramas:** todo el desarrollo se realiza en `develop`; el merge a `main` solo se hace con aprobación explícita.
+- **Mensajes:** Conventional Commits en minúsculas y en español (`feat: ...`, `fix: ...`, `chore: ...`, `docs: ...`).
+- **Despliegue:** Cloudflare Pages sirve el sitio estático y las Pages Functions de `functions/`; el pipeline `.github/workflows/ci-cd.yml` ejecuta lint, test, build y deploy.
